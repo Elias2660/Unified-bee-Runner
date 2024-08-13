@@ -9,6 +9,7 @@
 # --frames-per-sample: number of frames to take for each sample
 # --start: the step with which to start
 # --end: the step with which to end
+# --gpus: the number of gpus to use
 
 # Additionally, you can run the following command to get the help menu
 # python Unified-bee-Runner/master_run.py --help

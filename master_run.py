@@ -201,7 +201,7 @@ if args.start <= 3 and args.end >= 3:
             to_truncate.truncate(0)
             to_truncate.close()
 
-        arguments = f"--k {args.k} --model {args.model} --seed {args.seed} --width {args.width} --height {args.height} --path_to_file {dir_name} --frames_per_sample {args.frames_per_sample} --crop_x_offset {args.crop_x_offset} --crop_y_offset {args.crop_y_offset} --epochs {args.epochs}"
+        arguments = f"--k {args.k} --model {args.model} --gpus {args.gpus} --seed {args.seed} --width {args.width} --height {args.height} --path_to_file {dir_name} --frames_per_sample {args.frames_per_sample} --crop_x_offset {args.crop_x_offset} --crop_y_offset {args.crop_y_offset} --epochs {args.epochs}"
         if args.only_split:
             arguments += " --only_split"
         if args.training_only:

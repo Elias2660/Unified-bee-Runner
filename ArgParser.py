@@ -268,6 +268,12 @@ def get_args():
         help="Print debug information, activates debug for logger (and other scripts), defgault=False",
         default=False,
     )
+    parser.add_argument(
+        "--gpus",
+        type=int,
+        help="The number of gpus to use for training, default=1",
+        default=1,
+    )
 
     args = parser.parse_args()
     return args
