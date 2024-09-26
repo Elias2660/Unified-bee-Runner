@@ -59,11 +59,11 @@ try:
     logging.info("(0) Starting the pipeline")
 except Exception as e:
     logging.error(f"Error: {e}")
-    raise "Something went wrong in the beginning"
+    raise ValueError("Something went wrong in the beginning")
 # convert the videos
 
 if args.start > args.end:
-    raise "You can't have the start be higher than the end"
+    raise ValueError("You can't have the start be higher than the end")
 
 #  if the videos a .h264, convert to .mp4, else, just make a counts.csv
 if args.start <= 0 and args.end >= 0:
@@ -92,7 +92,7 @@ if args.start <= 0 and args.end >= 0:
 
         arguments = f"--max-workers {args.max_workers_frame_counter}"
         if contains_h264 and contains_mp4:
-            raise "Both types of file are in this directory, please remove one"
+            raise ValueError("Both types of file are in this directory, please remove one")
         elif contains_h264:
             logging.info(
                 "Converting .h264 to .mp4, old h264 files can be found in the h264_files folder"
@@ -108,7 +108,7 @@ if args.start <= 0 and args.end >= 0:
                 shell=True,
             )
         else:
-            raise "Something went wrong with the file typing, as it seems that there are no .h264 or .mp4 files in the directory"
+            raise ValueError("Something went wrong with the file typing, as it seems that there are no .h264 or .mp4 files in the directory")
 
         # truncating chmoding.log, if it exists
         if "chmoding.log" in file_list:
@@ -119,7 +119,7 @@ if args.start <= 0 and args.end >= 0:
         subprocess.run("chmod -R 777 . >> chmoding.log 2>&1", shell=True)
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 0"
+        raise ValueError("Something went wrong in step 0")
 else:
     logging.info(
         f"Skipping step 0, given the start ({args.start}) and end ({args.end}) values"
@@ -156,7 +156,7 @@ if args.start <= 1 and args.end >= 1:
             logging.info("No background subtraction type given, skipping this step")
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 1"
+        raise ValueError("Something went wrong in step 1")
 else:
     logging.info(
         f"Skipping step 1, given the start ({args.start}) and end ({args.end}) values"
@@ -202,7 +202,7 @@ if args.start <= 2 and args.end >= 2:
         )
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 2"
+        raise ValueError("Something went wrong in step 2")
 else:
     logging.info(
         f"Skipping step 2, given the start ({args.start}) and end ({args.end}) values"
@@ -238,7 +238,7 @@ if args.start <= 3 and args.end >= 3:
         )
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 3"
+        raise ValueError("Something went wrong in step 3")
 else:
     logging.info(
         f"Skipping step 3, given the start ({args.start}) and end ({args.end}) values"
@@ -273,7 +273,7 @@ if args.start <= 4 and args.end >= 4:
 
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 4"
+        raise ValueError("Something went wrong in step 4")
     finally:
         test_step_4("VideoSamplerRewrite")
 
@@ -298,7 +298,7 @@ if args.start <= 5 and args.end >= 5:
         logging.info("Pipeline complete, training is occuring")
     except Exception as e:
         logging.error(f"Error: {e}")
-        raise "Something went wrong in step 5"
+        raise ValueError("Something went wrong in step 5")
 else:
     logging.info(
         f"Skipping step 5, given the start ({args.start}) and end ({args.end}) values"
