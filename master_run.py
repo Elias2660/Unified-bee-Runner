@@ -176,12 +176,6 @@ if args.start <= 2 and args.end >= 2:
         else:
             string_log_list = args.files
 
-        logging.info("Truncating the MAKE_DATASET_2.log to zero, if it exists")
-        if "MAKE_DATASET_2.log" in file_list:
-            to_truncate = open("MAKE_DATASET_2.log", "r+")
-            to_truncate.truncate(0)
-            to_truncate.close()
-
         arguments = f"--files '{string_log_list}' --starting-frame {args.starting_frame} --frame-interval {args.frame_interval}"
         subprocess.run(
             f"python Dataset_Creator/Make_Dataset.py {arguments} >> dataprep.log 2>&1",
