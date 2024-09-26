@@ -289,7 +289,7 @@ if args.start <= 5 and args.end >= 5:
     try:
         summary = """
         Running model training can be tricky. As this runs, make sure that you're running the correct scripts
-        
+
         Additionally, a big problem that can come up is that the wrong python environment is being used. It's possible that you might have to switch from python38 to 39, or vice versa
         """
         logging.info("")
