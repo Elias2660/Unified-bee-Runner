@@ -41,7 +41,7 @@ try:
     logging.info("---- Starting the pipeline ----")
     subprocess.run("python -m venv venv", shell=True)
     subprocess.run("source venv/bin/activate", shell=True)
-    subprocess.run("pip install -r requirements.txt", shell=True)
+    subprocess.run("pip install -r requirements.txt >> /dev/null", shell=True)
 
     path = args.data_path
 
@@ -66,11 +66,11 @@ if args.start <= 0 and args.end >= 0:
         
         logging.info("---- Cloning Video_Frame_Counter ----")
         subprocess.run(
-            "git clone https://github.com/Elias2660/Video_Frame_Counter.git >> dataprep.log 2>&1",
+            "git clone https://github.com/Elias2660/Video_Frame_Counter.git >> /dev/null",
             shell=True,
         )
         logging.debug("---- Installing the requirements for the Video_Frame_Counter ----")
-        subprocess.run("pip install -r Video_Frame_Counter/requirements.txt", shell=True)
+        subprocess.run("pip install -r Video_Frame_Counter/requirements.txt >> /dev/null", shell=True)
         file_list = os.listdir(path)
 
         contains_h264 = True in [
@@ -127,14 +127,14 @@ if args.start <= 1 and args.end >= 1:
             
             
             subprocess.run(
-                "git clone https://github.com/Elias2660/Video_Subtractions.git >> dataprep.log 2>&1",
+                "git clone https://github.com/Elias2660/Video_Subtractions.git >> /dev/null",
                 shell=True,
             )
-            subprocess.run("pip install -r Video_Subtractions/requirements.txt", shell=True)
+            subprocess.run("pip install -r Video_Subtractions/requirements.txt >> /dev/null", shell=True)
 
             arguments = f"--subtractor {args.background_subtraction_type} --max-workers {args.max_workers_background_subtraction}"
             subprocess.run(
-                f"python Video_Subtractions/Convert.py {arguments} >> dataprep.log 2>&1",
+                f"python Video_Subtractions/Convert.py {arguments} >> /dev/null",
                 shell=True,
             )
 
@@ -167,10 +167,10 @@ if args.start <= 2 and args.end >= 2:
             os.rmdir("Dataset_Creator")
 
         subprocess.run(
-            "git clone https://github.com/Elias2660/Dataset_Creator.git >> dataprep.log 2>&1",
+            "git clone https://github.com/Elias2660/Dataset_Creator.git >> /dev/null",
             shell=True,
         )
-        subprocess.run("pip install -r Dataset_Creator/requirements.txt", shell=True)
+        subprocess.run("pip install -r Dataset_Creator/requirements.txt >> /dev/null", shell=True)
         if args.files is None:
             string_log_list = ",".join(log_list).strip().replace(" ", "")
         else:
@@ -205,7 +205,7 @@ if args.start <= 3 and args.end >= 3:
 
         BEE_ANALYSIS_CLONE = "https://github.com/Elias2660/working_bee_analysis.git"
         subprocess.run(f"git clone {BEE_ANALYSIS_CLONE} >> dataprep.log 2>&1", shell=True)
-        subprocess.run("pip install -r working_bee_analysis/requirements.txt", shell=True)
+        subprocess.run("pip install -r working_bee_analysis/requirements.txt >> /dev/null", shell=True)
         dir_name = BEE_ANALYSIS_CLONE.split(".")[1].strip().split("/")[-1].strip()
 
         logging.info("truncating dataprep.log, if it exists")
@@ -237,10 +237,10 @@ if args.start <= 4 and args.end >= 4:
             os.rmdir("VideoSamplerRewrite")
 
         subprocess.run(
-            f"git clone https://github.com/Elias2660/VideoSamplerRewrite.git >> dataprep.log 2>&1",
+            f"git clone https://github.com/Elias2660/VideoSamplerRewrite.git >> /dev/null",
             shell=True,
         )
-        subprocess.run("pip install -r VideoSamplerRewrite/requirements.txt", shell=True)
+        subprocess.run("pip install -r VideoSamplerRewrite/requirements.txt >> /dev/null", shell=True)
 
         # ? No need to truncate dataprep.log because the Dataprep package already truncates
         subprocess.run(
