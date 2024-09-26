@@ -59,8 +59,7 @@ if args.start > args.end:
 
 #  if the videos a .h264, convert to .mp4, else, just make a counts.csv
 if args.start <= 0 and args.end >= 0:
-    logging.info(
-        "(0) Starting the video conversions, always defaulting to .mp4")
+    logging.info("(0) Starting the video conversions, always defaulting to .mp4")
     try:
         if "Video_Frame_Counter" in file_list:
             os.rmdir("Video_Frame_Counter")
@@ -71,9 +70,11 @@ if args.start <= 0 and args.end >= 0:
             shell=True,
         )
         logging.debug(
-            "---- Installing the requirements for the Video_Frame_Counter ----")
+            "---- Installing the requirements for the Video_Frame_Counter ----"
+        )
         subprocess.run(
-            "pip install -r Video_Frame_Counter/requirements.txt", shell=True)
+            "pip install -r Video_Frame_Counter/requirements.txt", shell=True
+        )
         file_list = os.listdir(path)
 
         contains_h264 = True in [
@@ -89,7 +90,8 @@ if args.start <= 0 and args.end >= 0:
 
         if contains_h264 and contains_mp4:
             raise ValueError(
-                "Both types of file are in this directory, please remove one")
+                "Both types of file are in this directory, please remove one"
+            )
         elif contains_h264:
             logging.info(
                 "Converting .h264 to .mp4, old h264 files can be found in the h264_files folder"
@@ -106,7 +108,8 @@ if args.start <= 0 and args.end >= 0:
             )
         else:
             raise ValueError(
-                "Something went wrong with the file typing, as it seems that there are no .h264 or .mp4 files in the directory")
+                "Something went wrong with the file typing, as it seems that there are no .h264 or .mp4 files in the directory"
+            )
 
         logging.info("---- Changing Permissions for the Repository----")
         subprocess.run("chmod -R 777 .", shell=True)
@@ -134,7 +137,8 @@ if args.start <= 1 and args.end >= 1:
                 shell=True,
             )
             subprocess.run(
-                "pip install -r Video_Subtractions/requirements.txt", shell=True)
+                "pip install -r Video_Subtractions/requirements.txt", shell=True
+            )
 
             arguments = f"--subtractor {args.background_subtraction_type} --max-workers {args.max_workers_background_subtraction}"
             subprocess.run(
@@ -143,8 +147,7 @@ if args.start <= 1 and args.end >= 1:
             )
 
         else:
-            logging.info(
-                "No background subtraction type given, skipping this step")
+            logging.info("No background subtraction type given, skipping this step")
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 1")
@@ -175,8 +178,7 @@ if args.start <= 2 and args.end >= 2:
             "git clone https://github.com/Elias2660/Dataset_Creator.git >> dataprep.log 2>&1",
             shell=True,
         )
-        subprocess.run(
-            "pip install -r Dataset_Creator/requirements.txt", shell=True)
+        subprocess.run("pip install -r Dataset_Creator/requirements.txt", shell=True)
         if args.files is None:
             string_log_list = ",".join(log_list).strip().replace(" ", "")
         else:
@@ -211,11 +213,12 @@ if args.start <= 3 and args.end >= 3:
 
         BEE_ANALYSIS_CLONE = "https://github.com/Elias2660/working_bee_analysis.git"
         subprocess.run(
-            f"git clone {BEE_ANALYSIS_CLONE} >> dataprep.log 2>&1", shell=True)
+            f"git clone {BEE_ANALYSIS_CLONE} >> dataprep.log 2>&1", shell=True
+        )
         subprocess.run(
-            "pip install -r working_bee_analysis/requirements.txt", shell=True)
-        dir_name = BEE_ANALYSIS_CLONE.split(
-            ".")[1].strip().split("/")[-1].strip()
+            "pip install -r working_bee_analysis/requirements.txt", shell=True
+        )
+        dir_name = BEE_ANALYSIS_CLONE.split(".")[1].strip().split("/")[-1].strip()
 
         logging.info("truncating dataprep.log, if it exists")
 
@@ -249,7 +252,8 @@ if args.start <= 4 and args.end >= 4:
             shell=True,
         )
         subprocess.run(
-            "pip install -r VideoSamplerRewrite/requirements.txt", shell=True)
+            "pip install -r VideoSamplerRewrite/requirements.txt", shell=True
+        )
 
         # ? No need to truncate dataprep.log because the Dataprep package already truncates
         subprocess.run(
