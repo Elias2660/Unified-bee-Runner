@@ -130,8 +130,7 @@ if args.start <= 1 and args.end >= 1:
             # removing the background subtraction folder if it exists
             if "Video_Subtractions" in file_list:
                 os.rmdir("Video_Subtractions")
-            
-            
+
             subprocess.run(
                 "git clone https://github.com/Elias2660/Video_Subtractions.git >> dataprep.log 2>&1",
                 shell=True,

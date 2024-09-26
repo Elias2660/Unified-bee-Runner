@@ -22,7 +22,11 @@ export NUMEXPR_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 python Unified-bee-Runner/master_run.py --height 720 --width 960 --number-of-samples 40000 --frames-per-sample 5 --gpus 2 >> dataprep.log 2>&1
 =======
 python Unified-bee-Runner/master_run.py --height 720 --width 960 --number-of-samples 40000 --frames-per-sample 5 --gpus 2 >>dataprep.log 2>&1
 >>>>>>> 4e01613ca37b054949d5210e7035e09cb05b1efa
+=======
+python Unified-bee-Runner/master_run.py --height 720 --width 960 --number-of-samples 40000 --frames-per-sample 5 --gpus 2 >>dataprep.log 2>&1
+>>>>>>> 4946296bf31fa936fedb28d8d895c31d8f4c5056
