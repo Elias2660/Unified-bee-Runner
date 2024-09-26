@@ -27,11 +27,13 @@ TODO: Work to add common pitfalls
 TODO: Finish implementing debugging for the pipeline
 """
 
-import os
 import logging
+import os
 import subprocess
+
 from ArgParser import get_args
-from test_steps import test_step_0, test_step_1, test_step_2, test_step_3, test_step_4
+from test_steps import (test_step_0, test_step_1, test_step_2, test_step_3,
+                        test_step_4)
 
 format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
