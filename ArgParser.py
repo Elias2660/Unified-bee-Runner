@@ -111,7 +111,7 @@ def get_args():
     
     This script automatically converts the videos to .mp4 format and then runs the pipeline on the data. The video type can either be mp4 or h264.
     """
-    
+
     poem = """
     One workflow to rule them all,
     one workflow to find them,
