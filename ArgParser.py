@@ -106,9 +106,9 @@ Example:
 def get_args():
     description = """
     Runs the pipeline that processes the data using the specified model.
-    
+
     This program expects the log files to be named in the form logNo.txt, logPos.txt, logNeg.txt.
-    
+
     This script automatically converts the videos to .mp4 format and then runs the pipeline on the data. The video type can either be mp4 or h264.
     """
 
