@@ -107,14 +107,15 @@ This script is organized in chapters, so you can use the start and end flags to 
 - `--start`: The step with which to start the pipeline.
 - `--end`: The step with which to end the pipeline.
 """
-
 import getpass
 import logging
 import multiprocessing
 import os
 import subprocess
 from datetime import datetime
-from stat import S_IREAD, S_IRGRP, S_IROTH
+from stat import S_IREAD
+from stat import S_IRGRP
+from stat import S_IROTH
 
 from ArgParser import get_args
 
