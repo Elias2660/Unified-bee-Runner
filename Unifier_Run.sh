@@ -33,10 +33,10 @@ export OMP_NUM_THREADS=1
 # a big problems with .bashrcs lol
 export PATH="/usr/bin/python3:$PATH"
 
-rm slurm* >> /dev/null 2>&1
+rm slurm* >>/dev/null 2>&1
 
 cd Unified-bee-Runner || exit
-git submodule update --init --recursive >> ../dataprep.log 2>&1
+git submodule update --init --recursive >>../dataprep.log 2>&1
 cd ..
 
 python3 -m venv venv
@@ -49,7 +49,7 @@ python -m pip install --upgrade pip
 # purging cache, this fixes (hopefully torch install issues)
 pip cache purge
 # torch is hard to install; changing tmpdir so that it would be easier to install
-TMPDIR=. python3 -m pip install torch  
+TMPDIR=. python3 -m pip install torch
 
 # if you are training with each video being a separate class,
 # use this flag: --each-video-one-class to make it work
