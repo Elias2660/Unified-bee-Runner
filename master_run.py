@@ -226,9 +226,9 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
 
 # convert the video
 # At this point, only the Unified_Bee_Runner, Dataprep.log, venv, and RUN_DESCRIPTION.log need to be modified
-   
+
 # stupid ilab umask makes files unreadable / undeletable to everyone
-# except the creators, which is great for school projects but not so 
+# except the creators, which is great for school projects but not so
 # good for shared research / data projects
 subprocess.run("chmod -R 777 Unified-bee-Runner *.log venv >> /dev/null 2>&1",
                shell=True)
@@ -438,7 +438,7 @@ else:
     )
 
 # -----  STEP 3: Splitting up the data -----
-# This creates the .sh files along with the dataset_*.csv files. This 
+# This creates the .sh files along with the dataset_*.csv files. This
 # is the last step until the Video Sampler can create the tar files of
 # samples
 
