@@ -2,8 +2,7 @@
 
 Unified Bee Runner is a pipeline for processing and analyzing bee-related datasets. This project includes several steps such as dataset creation, video conversion, data splitting, and model training. The model is meant to run on ilab, and through slurm, and for the Behavioral Analysis project at [Rutgers WINLAB](https://www.winlab.rutgers.edu/).
 
-This is mean to unify all the code that has been created for the [project (2024 presentation attached)](https://docs.google.com/presentation/d/1j25c85SZ_8YPYvNdfubfVlN3Zx5B-090/edit?usp=sharing&ouid=110217722607110726120&rtpof=true&sd=true). 
-
+This is mean to unify all the code that has been created for the [project (2024 presentation attached)](https://docs.google.com/presentation/d/1j25c85SZ_8YPYvNdfubfVlN3Zx5B-090/edit?usp=sharing&ouid=110217722607110726120&rtpof=true&sd=true).
 
 ## Pipeline
 
@@ -89,4 +88,3 @@ If you discover a security vulnerability within this project, please report it. 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
