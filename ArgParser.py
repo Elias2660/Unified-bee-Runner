@@ -116,16 +116,14 @@ def get_args():
     parser.add_argument(
         "--end",
         type=int,
-        help=
-        "(unifier)end the pipeline at the given step, default 6 (will not stop)",
+        help="(unifier)end the pipeline at the given step, default 6 (will not stop)",
         default=6,
         required=False,
     )
     parser.add_argument(
         "--debug",
         action="store_true",
-        help=
-        "(unifier)Print debug information, activates debug for logger (and other scripts), default=False",
+        help="(unifier)Print debug information, activates debug for logger (and other scripts), default=False",
         default=False,
     )
 
@@ -136,8 +134,7 @@ def get_args():
         required=False,
         default=None,
         type=str,
-        help=
-        "(background subtraction) Background subtraction type to use, default None, you can either choose MOG2 or KNN",
+        help="(background subtraction) Background subtraction type to use, default None, you can either choose MOG2 or KNN",
     )
     # for make_validation_training
     parser.add_argument(
@@ -159,22 +156,19 @@ def get_args():
     parser.add_argument(
         "--number-of-samples",
         type=int,
-        help=
-        "(sampling)the number of samples max that will be gathered by the sampler, default=40000",
+        help="(sampling)the number of samples max that will be gathered by the sampler, default=40000",
         default=40000,
     )
     parser.add_argument(
         "--max-workers-video-sampling",
         type=int,
-        help=
-        "(sampling)The number of workers to use for the multiprocessing of the sampler, default=3",
+        help="(sampling)The number of workers to use for the multiprocessing of the sampler, default=3",
         default=3,
     )
     parser.add_argument(
         "--frames-per-sample",
         type=int,
-        help=
-        "(sampling, splitting the data)The number of frames per sample, default=1",
+        help="(sampling, splitting the data)The number of frames per sample, default=1",
         default=1,
     )
     parser.add_argument(
@@ -192,8 +186,7 @@ def get_args():
     parser.add_argument(
         "--k",
         type=int,
-        help=
-        "(making the splits) Number of folds for cross validation, default 3",
+        help="(making the splits) Number of folds for cross validation, default 3",
         default=3,
         required=False,
     )
@@ -242,29 +235,25 @@ def get_args():
         action="store_true",
         required=False,
         default=False,
-        help=
-        "(dataset creation) creates a dataset.csv that is time based, rather than based on the log files. This is to test for correlation between daytime and class accuracy",
+        help="(dataset creation) creates a dataset.csv that is time based, rather than based on the log files. This is to test for correlation between daytime and class accuracy",
     )
     parser.add_argument(
         "--time-splits",
         type=int,
         default=3,
         required=False,
-        help=
-        "(dataset creation) if the --test-by-time option is called, this will determine the number of splits that will occur",
+        help="(dataset creation) if the --test-by-time option is called, this will determine the number of splits that will occur",
     )
     parser.add_argument(
         "--files",
         type=str,
-        help=
-        "(dataset creation) name of the log files that one wants to use, default logNo.txt, logNeg.txt, logPos.txt",
+        help="(dataset creation) name of the log files that one wants to use, default logNo.txt, logNeg.txt, logPos.txt",
         default=None,
         required=False,
     )
     parser.add_argument(
         "--each-video-one-class",
-        help=
-        "(dataset creation) the case where each video is one class; a special workflow",
+        help="(dataset creation) the case where each video is one class; a special workflow",
         action="store_true",
         default=False,
         required=False,
@@ -273,8 +262,7 @@ def get_args():
         "--end-frame-buffer",
         type=int,
         default=0,
-        help=
-        "(dataset creation) the number of frames to buffer at the end of the video (NOTE/TODO: only works for each frame one class and time testing, not base version), default=0",
+        help="(dataset creation) the number of frames to buffer at the end of the video (NOTE/TODO: only works for each frame one class and time testing, not base version), default=0",
         required=False,
     )
 
@@ -284,40 +272,35 @@ def get_args():
         "--seed",
         type=str,
         default="01011970",
-        help=
-        "(making the splits) Seed to use for randomizing the data sets, default: 01011970",
+        help="(making the splits) Seed to use for randomizing the data sets, default: 01011970",
     )
     parser.add_argument(
         "--only_split",
         required=False,
         default=False,
         action="store_true",
-        help=
-        "(making the splits) Set to finish after splitting the csv, default: False",
+        help="(making the splits) Set to finish after splitting the csv, default: False",
     )
     parser.add_argument(
         "--crop_x_offset",
         type=int,
         required=False,
         default=0,
-        help=
-        "(making the splits) The offset (in pixels) of the crop location on the original image in the x dimension, default 0",
+        help="(making the splits) The offset (in pixels) of the crop location on the original image in the x dimension, default 0",
     )
     parser.add_argument(
         "--crop_y_offset",
         type=int,
         required=False,
         default=0,
-        help=
-        "(making the splits) The offset (in pixels) of the crop location on the original image in the y dimension, default 0",
+        help="(making the splits) The offset (in pixels) of the crop location on the original image in the y dimension, default 0",
     )
     parser.add_argument(
         "--training_only",
         type=bool,
         required=False,
         default=False,
-        help=
-        "(making the splits) only generate the training set files, default: False",
+        help="(making the splits) only generate the training set files, default: False",
     )
 
     # FRAME COUNTING
@@ -330,8 +313,7 @@ def get_args():
     parser.add_argument(
         "--max-workers-frame-counter",
         type=int,
-        help=
-        "(frame counting) The number of workers to use for the multiprocessing of the frame counter, default=20",
+        help="(frame counting) The number of workers to use for the multiprocessing of the frame counter, default=20",
         default=20,
         required=False,
     )
@@ -340,8 +322,7 @@ def get_args():
     parser.add_argument(
         "--max-workers-background-subtraction",
         type=int,
-        help=
-        "(background subtraction) The number of workers to use for the multiprocessing of the background subtraction, default=10",
+        help="(background subtraction) The number of workers to use for the multiprocessing of the background subtraction, default=10",
         default=10,
         required=False,
     )
@@ -376,8 +357,7 @@ def get_args():
         action="store_true",
         default=False,
         required=False,
-        help=
-        "(training) Whether to use dataloader workers in the training script.",
+        help="(training) Whether to use dataloader workers in the training script.",
     )
 
     parser.add_argument(
@@ -421,8 +401,7 @@ def get_args():
             "model_b.4.0",
         ],
         default=["model_a.4.0", "model_b.4.0"],
-        help=
-        "(training, make validation training) Model layers for gradcam plots, default=['model_a.4.0', 'model_b.4.0']",
+        help="(training, make validation training) Model layers for gradcam plots, default=['model_a.4.0', 'model_b.4.0']",
     )
 
     # SAMPLING
@@ -436,8 +415,7 @@ def get_args():
     parser.add_argument(
         "--equalize-samples",
         action="store_true",
-        help=
-        "(sampling) Equalize the samples so that each class has the same number of samples",
+        help="(sampling) Equalize the samples so that each class has the same number of samples",
         default=False,
     )
     parser.add_argument(
@@ -450,8 +428,7 @@ def get_args():
     parser.add_argument(
         "--max-threads-pic-saving",
         type=int,
-        help=
-        "(sampling) The number of threads to use for saving the pictures, default=4",
+        help="(sampling) The number of threads to use for saving the pictures, default=4",
         required=False,
         default=4,
     )
@@ -459,14 +436,12 @@ def get_args():
         "--max-batch-size-sampling",
         type=int,
         default=5,
-        help=
-        "(sampling) The maximum batch size for sampling the video, default=5",
+        help="(sampling) The maximum batch size for sampling the video, default=5",
     )
     parser.add_argument(
         "--max-workers-tar-writing",
         type=int,
-        help=
-        "(sampling) The number of workers to use for writing the tar files, default=4",
+        help="(sampling) The number of workers to use for writing the tar files, default=4",
         required=False,
         default=4,
     )
