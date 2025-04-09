@@ -128,7 +128,7 @@ with open("RUN_DESCRIPTION.log", "w+") as rd:
     rd.write(f"Python Version: {python_version}\n")
 
     system_info = subprocess.check_output(["uname",
-                                              "-a"]).decode().strip()
+                                           "-a"]).decode().strip()
     rd.write(f"system: {system_info}\n")
 
 try:
