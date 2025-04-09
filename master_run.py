@@ -125,8 +125,11 @@ with open("RUN_DESCRIPTION.log", "w+") as rd:
 
     python_version = subprocess.check_output(["which",
                                               "python3"]).decode().strip()
-    rd.write(f"which python: {python_version}\n")
-    rd.write(f"system: {os.system('uname -a')}\n")
+    rd.write(f"Python Version: {python_version}\n")
+
+    system_info = subprocess.check_output(["uname",
+                                              "-a"]).decode().strip()
+    rd.write(f"system: {system_info}\n")
 
 try:
     args = get_args()
