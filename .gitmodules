@@ -16,9 +16,6 @@
 [submodule "non_workflow_links/working_bee_analysis"]
 	path = non_workflow_links/working_bee_analysis
 	url = https://github.com/Elias2660/working_bee_analysis
-[submodule "bee_analysis"]
-	path = bee_analysis
-	url = https://github.com/bfirner/bee_analysis
 [submodule "VideoSamplerRewrite"]
 	path = VideoSamplerRewrite
 	url = https://github.com/Elias2660/VideoSamplerRewrite
