@@ -55,7 +55,7 @@ TMPDIR=. python3 -m pip install torch
 # use this flag: --each-video-one-class to make it work
 
 python3 Unified-bee-Runner/master_run.py \
-  --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers \
+  --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers --max-dataloader-workers 24\
   --height 720 --frame-interval 50 \
   --width 960 \
   --number-of-samples 10000 --max-workers-video-sampling 6 \
