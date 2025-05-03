@@ -22,3 +22,6 @@
 [submodule "non_workflow_links/ai-for-behavioral-discovery"]
 	path = non_workflow_links/ai-for-behavioral-discovery
 	url = https://github.com/benjaminyu14/ai-for-behavioral-discovery
+[submodule "bee_analysis"]
+	path = bee_analysis
+	url = https://github.com/bfirner/bee_analysis
