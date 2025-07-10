@@ -127,8 +127,7 @@ with open("RUN_DESCRIPTION.log", "w+") as rd:
                                               "python3"]).decode().strip()
     rd.write(f"Python Version: {python_version}\n")
 
-    system_info = subprocess.check_output(["uname",
-                                              "-a"]).decode().strip()
+    system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
     rd.write(f"system: {system_info}\n")
 
 try:
@@ -452,7 +451,7 @@ if args.start <= 3 and args.end >= 3:
             f" --model {args.model} "
             f" --gpus {args.gpus} "
             f" --seed {args.seed} "
-            f" --width {args.width if not args.crop else args.out_width } "
+            f" --width {args.width if not args.crop else args.out_width} "
             f" --height {args.height if not args.crop else args.out_height} "
             f" --path_to_file {os.path.join(DIR_NAME, 'bee_analysis')} "
             f" --frames_per_sample {args.frames_per_sample} "
