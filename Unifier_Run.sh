@@ -51,7 +51,7 @@ python -m pip install --upgrade pip >>/dev/null 2>&1
 
 # purging cache, this fixes (hopefully torch install issues)
 echo "Purging unwanted dependencies and pip's cache" >>dataprep.log 2>&1
-pip cache purge >> /dev/null 2>&1 
+pip cache purge >>/dev/null 2>&1
 # torch is hard to install; changing tmpdir so that it would be easier to install
 echo "Installing torch using the current directory as a temporary dir" >>dataprep.log 2>&1
 TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
@@ -60,9 +60,9 @@ TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
 # use this flag: --each-video-one-class to make it work
 
 python3 Unified-bee-Runner/master_run.py \
-    --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers \
-    --height 720 --frame-interval 50 \
-    --width 960 \
-    --number-of-samples 10000 --max-workers-video-sampling 6 \
-    --frames-per-sample 5 \
-    --gpus 1 >>dataprep.log 2>&1
+  --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers \
+  --height 720 --frame-interval 50 \
+  --width 960 \
+  --number-of-samples 10000 --max-workers-video-sampling 6 \
+  --frames-per-sample 5 \
+  --gpus 1 >>dataprep.log 2>&1
