@@ -50,7 +50,8 @@ echo "Upgrading pip" >>dataprep.log 2>&1
 python -m pip install --upgrade pip >>/dev/null 2>&1
 
 # purging cache, this fixes (hopefully torch install issues)
-pip cache purge
+echo "Purging unwanted dependencies and pip's cache" >>dataprep.log 2>&1
+pip cache purge >> /dev/null 2>&1 
 # torch is hard to install; changing tmpdir so that it would be easier to install
 echo "Installing torch using the current directory as a temporary dir" >>dataprep.log 2>&1
 TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
