@@ -42,18 +42,18 @@ data_dir
 
 Run `squeue -u <user>` to be able to find your current jobs and the servers that they are running on.
 
+**RECOMMENDED**: To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings:
+
+```sh
+./Unified-bee-Runner/Slurm_Run.sh
+```
+
 You can edit the [`Unifier_Run.sh`](Unifier_Run.sh) file with the settings that you desire. You can check the settings by running [`python3 Unified-bee-Runner/master_run.py -h`](master_run.py) or checking in [`ArgParser.py`](ArgParser.py) for the arguments that can be used. Not all of them work, including those that crop, and this pipeline is still working through many bugs.
 
 Then run:
 
 ```sh
 sbatch -x [servers, such as server1,server2] Unified-bee-Runner/Unifier_Run.sh
-```
-
-**RECOMMENDED**: To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings:
-
-```sh
-./Unified-bee-Runner/Slurm_Run.sh
 ```
 
 ## Pipeline Steps
