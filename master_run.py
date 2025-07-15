@@ -190,7 +190,6 @@ except Exception as e:
 
 # write the information into the description, to be stored later as part of the results
 with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
-
     run_desc.write("\n-- Run Settings --\n")
     run_desc.write(f"Attempted Samples Per Video: {args.number_of_samples}\n")
     run_desc.write(f"Frames per Sample: {args.frames_per_sample}\n")
@@ -206,6 +205,10 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write(f"Optimize Counting: {args.optimize_counting}\n")
     run_desc.write(f"Use .bin Files: {args.binary_training_optimization}\n")
     run_desc.write(f"Use dataloader workers: {args.use_dataloader_workers}\n")
+    
+    # path stuff
+    rd.write(f"Data Path: {args.in_path}\n")
+    rd.write(f"Experiment Path: {args.out_path}\n")
 
     # path stuff
     run_desc.write(f"Data Path: {args.in_path}\n")
