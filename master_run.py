@@ -322,8 +322,14 @@ if args.start <= 1 and args.end >= 1:
                 f"pip install -r {os.path.join(DIR_NAME, 'Video_Subtractions/requirements.txt')} >> /dev/null",
                 shell=True,
             )
-
+            
+            # if the data directory contains .h264 files, then the files have
+            # been converted to .mp4 in the args.out_path directory
+            contains_h264 = any(".h264" in file for file in file_list)
+            
             arguments = (
+                f" --path {args.in_path if not contains_h264 else args.out_path} "
+                f" --dest-dir {os.path.join(args.out_path, 'unsubtracted_videos')}"
                 f" --subtractor {args.background_subtraction_type} "
                 f" --max-workers {args.max_workers_background_subtraction}")
             subprocess.run(
@@ -365,7 +371,8 @@ if args.start <= 2 and args.end >= 2:
                 "Deciding the test by time, given the passing of the --test-by-time button"
             )
             arguments = (
-                f" --path {args.in_path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path}"
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
@@ -384,7 +391,8 @@ if args.start <= 2 and args.end >= 2:
                 "Creating a one class dataset, given the passing of the --end-frame-buffer argument"
             )
             arguments = (
-                f" --path {args.in_path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path}"
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
@@ -414,7 +422,8 @@ if args.start <= 2 and args.end >= 2:
                 string_log_list = args.files
 
             arguments = (
-                f" --path {args.in_path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path} "
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --files '{string_log_list}' "
