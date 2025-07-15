@@ -325,7 +325,7 @@ if args.start <= 1 and args.end >= 1:
             
             # if the data directory contains .h264 files, then the files have
             # been converted to .mp4 in the args.out_path directory
-            contains_h264 = any(".h264" in file for file in file_list)
+            contains_h264 = any(".h264" in file for file in os.listdir(args.in_path))
             
             arguments = (
                 f" --path {args.in_path if not contains_h264 else args.out_path} "
@@ -531,9 +531,12 @@ if args.start <= 4 and args.end >= 4:
             f"pip install -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
             shell=True,
         )
+        contains_h264 = any(".h264" in file for file in os.listdir(args.in_path))
 
         arguments = (
-            f" --dataset_path {args.in_path} "
+            f" --video-input-path  {args.out_path if contains_h264 else args.in_path} "
+            f" --dataset-input-path {args.out_path} "
+            f" -out-path {args.out_path} "
             f" --frames-per-sample {args.frames_per_sample} "
             f" --number-of-samples {args.number_of_samples} "
             f" --normalize {args.normalize} "
