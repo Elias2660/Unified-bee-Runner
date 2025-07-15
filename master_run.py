@@ -467,6 +467,8 @@ if args.start <= 3 and args.end >= 3:
         )
 
         arguments = (
+            f" --in-path {args.in_path} "
+            f" --out-path {args.out_path} "
             f" --k {args.k} "
             f" --model {args.model} "
             f" --gpus {args.gpus} "
@@ -579,10 +581,10 @@ if args.start <= 5 and args.end >= 5:
     # shell function to pass for multiprocessing
     def create_bin_file(file, DIR_NAME, args):
         arguments = (
-            f" {file} "
+            f" {os.path.join(args.out_path, file)} "
             f" --entries {' '.join([f'{i}.png' for i in range(args.frames_per_sample)])} cls "
             f" --handler_overrides cls stoi "
-            f" --output {file.replace('tar', 'bin')} "
+            f" --output {os.path.join(args.out_path, file.replace('tar', 'bin'))} "
             f" --shuffle {20000 // args.frames_per_sample} "
             f" --shardshuffle {20000 // args.frames_per_sample}")
         subprocess.run(
@@ -594,7 +596,7 @@ if args.start <= 5 and args.end >= 5:
         logging.info(
             "(5) Creating .bin files given passing of --binary-training-optimization"
         )
-        file_list = [file for file in os.listdir() if file.endswith(".tar")]
+        file_list = [file for file in os.listdir(args.out_path) if file.endswith(".tar")]
 
         count = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=min(int(count /
@@ -608,9 +610,9 @@ if args.start <= 5 and args.end >= 5:
 
     try:
         subprocess.run(
-            "chmod -R 777 *.log *.sh Unified-bee-Runner >> /dev/null 2>&1",
+            f"chmod -R 777 {os.path.join(args.out_path, '*.log')} {os.path.join(args.out_path,'*.sh')} Unified-bee-Runner >> /dev/null 2>&1",
             shell=True)
-        subprocess.run("./training-run.sh", shell=True)
+        subprocess.run(f"./{os.path.join(args.out_path, "training-run.sh")}", shell=True)
         logging.info("Submitted executors for training")
         logging.info("Pipeline complete")
     except Exception as e:
