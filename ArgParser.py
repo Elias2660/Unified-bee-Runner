@@ -7,7 +7,7 @@ It uses the argparse library to define and handle various parameters required fo
 
 Command-line Arguments:
     -h, --help                     Show this help message and exit.
-    --data_path DATA_PATH          Path to the data, default is ".".
+    --data-path DATA-PATH          Path to the data, default is ".".
     --start START                  (unifier) Start the pipeline at the given step, default 0.
     --end END                      (unifier) End the pipeline at the given step, default 6.
     --debug                        (unifier) Print debug information and activate debug mode.
@@ -74,7 +74,7 @@ Usage:
     This script is intended to be used as part of a larger pipeline. It is typically invoked from the command line or another script, such as master_run.py.
 
 Example:
-    python ArgParser.py --data_path /path/to/data --start 0 --end 6 --width 960 --height 720
+    python ArgParser.py --data-path /path/to/data --start 0 --end 6 --width 960 --height 720
 
 """
 
@@ -100,11 +100,16 @@ def get_args():
 
     parser = argparse.ArgumentParser(description=description, epilog=poem)
     parser.add_argument(
-        "--data_path",
+        "--in-path",
         type=str,
-        help='Path to the data, default "."',
+        help='(unifier)path to the data and other input files, default "."',
         default=".",
         required=False,
+    )
+    parser.add_argument(
+        "--out-path",
+        type=str,
+        help="(unifier)the path where the output is going to appear, default '.'"
     )
     parser.add_argument(
         "--start",

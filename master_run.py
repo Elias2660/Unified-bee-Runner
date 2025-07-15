@@ -4,7 +4,9 @@ This script is organized in chapters, so you can use the start and end flags to 
 
 Arguments:
     -h, --help                     Show this help message and exit.
-    --data_path DATA_PATH          Path to the data, default is ".".
+    --data-path DATA_PATH          (unifier) path to the data, default is ".".
+    --experiment-path EXPERIMENT_PATH  
+                                   (unifier) the place where the output of all the scripts will run will occur
     --start START                  (unifier) Start the pipeline at the given step, default 0.
     --end END                      (unifier) End the pipeline at the given step, default 6.
     --debug                        (unifier) Print debug information and activate debug mode.
@@ -105,36 +107,36 @@ logging.basicConfig(format="%(asctime)s: %(message)s",
 
 DIR_NAME = os.path.dirname(os.path.abspath(__file__))
 
-with open("RUN_DESCRIPTION.log", "w+") as rd:
-    rd.write(
-        f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n")
-    rd.write(f"path: {DIR_NAME}\n")
-
-    user = getpass.getuser()
-    rd.write(f"User: {user}\n")
-
-    branch = (subprocess.check_output(
-        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-        cwd=DIR_NAME).decode("utf-8").strip())
-
-    rd.write(f"branch of Unified-bee-Runner: {branch}\n")
-
-    commit = (subprocess.check_output(["git", "rev-parse", "HEAD"],
-                                      cwd=DIR_NAME).decode("utf-8").strip())
-    rd.write(f"Version / Commit: {commit}\n")
-
-    python_version = subprocess.check_output(["which",
-                                              "python3"]).decode().strip()
-    rd.write(f"Python Version: {python_version}\n")
-
-    system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
-    rd.write(f"system: {system_info}\n")
+    
 
 try:
     args = get_args()
+    
+    with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
+        rd.write(
+            f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n")
+        rd.write(f"path: {DIR_NAME}\n")
+
+        user = getpass.getuser()
+        rd.write(f"User: {user}\n")
+
+        branch = (subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=DIR_NAME).decode("utf-8").strip())
+
+        rd.write(f"branch of Unified-bee-Runner: {branch}\n")
+
+        commit = (subprocess.check_output(["git", "rev-parse", "HEAD"],
+                                        cwd=DIR_NAME).decode("utf-8").strip())
+        rd.write(f"Version / Commit: {commit}\n")
+
+        python_version = subprocess.check_output(["which",
+                                                "python3"]).decode().strip()
+        rd.write(f"Python Version: {python_version}\n")
+
+        system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
+        rd.write(f"system: {system_info}\n")
     logging.info("---- Starting the pipeline ----")
-    path = args.data_path
-    os.chdir(path)
 
     logging.info("---- Upgrading pip ----")
     subprocess.run("pip install --upgrade pip >> /dev/null",
@@ -170,7 +172,8 @@ except Exception as e:
     raise ValueError("Something went wrong in the beginning")
 
 # write the information into the description, to be stored later as part of the results
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
+    
     run_desc.write("\n-- Run Settings --\n")
     run_desc.write(f"Attempted Samples Per Video: {args.number_of_samples}\n")
     run_desc.write(f"Frames per Sample: {args.frames_per_sample}\n")
@@ -186,12 +189,16 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
     run_desc.write(f"Optimize Counting: {args.optimize_counting}\n")
     run_desc.write(f"Use .bin Files: {args.binary_training_optimization}\n")
     run_desc.write(f"Use dataloader workers: {args.use_dataloader_workers}\n")
+    
+    # path stuff
+    rd.write(f"Data Path: {args.in_path}\n")
+    rd.write(f"Experiment Path: {args.out_path}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Parsed Arguments --\n")
     run_desc.write(f"Parsed Arguments: {args}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Miscellaneous Settings --\n")
     run_desc.write(f"Seed: {args.seed}\n")
     run_desc.write(f"Normalize: {args.normalize}\n")
@@ -199,7 +206,7 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
     run_desc.write(f"Height: {args.height}\n")
     run_desc.write(f"Frames per Second: {args.fps}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Additional Options --\n")
     run_desc.write(f"Crop Enabled: {args.crop}\n")
     if args.crop:
@@ -246,11 +253,15 @@ if args.start <= 0 and args.end >= 0:
             executable="/bin/bash",
         )
 
-        file_list = os.listdir(path)
+        file_list = os.listdir(args.in_path)
         contains_h264 = any(".h264" in file for file in file_list)
         contains_mp4 = any(".mp4" in file for file in file_list)
-
-        arguments = (f" --path {path} "
+        
+        # for the path, the output .mp4 videos, if they converted them,
+        # would appear in the --experiment-path directory
+        # the counts file
+        arguments = (f" --video-filepath {args.in_path} "
+                     f" ----output-filepath {args.out_path}"
                      f" --max-workers {args.max_workers_frame_counter} ")
 
         logging.info("(0) ---- Running Video Conversions Sections ----")
@@ -354,7 +365,7 @@ if args.start <= 2 and args.end >= 2:
                 "Deciding the test by time, given the passing of the --test-by-time button"
             )
             arguments = (
-                f" --path {path} "
+                f" --path {args.in_path} "
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
@@ -373,7 +384,7 @@ if args.start <= 2 and args.end >= 2:
                 "Creating a one class dataset, given the passing of the --end-frame-buffer argument"
             )
             arguments = (
-                f" --path {path} "
+                f" --path {args.in_path} "
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
@@ -403,7 +414,7 @@ if args.start <= 2 and args.end >= 2:
                 string_log_list = args.files
 
             arguments = (
-                f" --path {path} "
+                f" --path {args.in_path} "
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --files '{string_log_list}' "
@@ -513,7 +524,7 @@ if args.start <= 4 and args.end >= 4:
         )
 
         arguments = (
-            f" --dataset_path {path} "
+            f" --dataset_path {args.in_path} "
             f" --frames-per-sample {args.frames_per_sample} "
             f" --number-of-samples {args.number_of_samples} "
             f" --normalize {args.normalize} "
