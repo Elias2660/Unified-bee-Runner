@@ -629,7 +629,7 @@ if args.start <= 5 and args.end >= 5:
         logging.info("Bin files created.")
 
         # make sure that everyone can analyze these new files
-        subprocess.run("chmod -R 777 *.bin >> /dev/null 2>&1", shell=True)
+        subprocess.run(f"chmod -R 777 {os.path.join(args.out_path, '*.bin')} >> /dev/null 2>&1", shell=True)
 
     try:
         subprocess.run(
