@@ -1,5 +1,8 @@
 #!/bin/bash
 
+INPUT_PATH="."
+OUTPUT_PATH="."
+touch $OUTPUT_PATH/dataprep.log
 # QUICKSTART OPTIONS, or some stuff that could be interesting to test out
 # --width: width of the video
 # --height: height of the video
@@ -35,35 +38,38 @@ export PATH="/usr/bin/python3:$PATH"
 
 rm slurm* >>/dev/null 2>&1
 
-echo "Initializing submodules" >>dataprep.log 2>&1
+echo "Initializing submodules" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 cd Unified-bee-Runner || exit
 git submodule update --init --recursive >>/dev/null 2>&1
 cd ..
-echo "Submodules initialized" >>dataprep.log 2>&1
+echo "Submodules initialized" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 
 python3 -m venv venv
 
 # shellcheck disable=SC1091
 source venv/bin/activate
 
-echo "Upgrading pip" >>dataprep.log 2>&1
+echo "Upgrading pip" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 python -m pip install --upgrade pip >>/dev/null 2>&1
 
 # purging cache, this fixes (hopefully torch install issues)
-echo "Purging unwanted dependencies and pip's cache" >>dataprep.log 2>&1
+echo "Purging unwanted dependencies and pip's cache" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 pip cache purge >>/dev/null 2>&1
 # torch is hard to install; changing tmpdir so that it would be easier to install
-echo "Installing torch using the current directory as a temporary dir" >>dataprep.log 2>&1
+echo "Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
+
+# ! IMPORTANT 
+# specify input / output paths
+
 
 # if you are training with each video being a separate class,
 # use this flag: --each-video-one-class to make it work
-
 python3 Unified-bee-Runner/master_run.py \
   --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers \
-  --experiment-path . --data-path . \
+  --experiment-path . --data-path $OUTPUT_PATH \
   --height 720 --frame-interval 50 \
   --width 960 \
   --number-of-samples 10000 --max-workers-video-sampling 6 \
   --frames-per-sample 5 \
-  --gpus 1 >>dataprep.log 2>&1
+  --gpus 1 >>"$OUTPUT_PATH/dataprep.log" 2>&1
