@@ -225,7 +225,7 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
 # stupid ilab umask makes files unreadable / undeletable / uneditable to everyone
 # except the creators, which is great for school projects but not so
 # good for shared research / data projects
-subprocess.run("chmod -R 777 Unified-bee-Runner *.log venv >> /dev/null 2>&1",
+subprocess.run(f"chmod -R 777 Unified-bee-Runner {os.path.join(args.out_path, '*.log')} venv >> /dev/null 2>&1",
                shell=True)
 
 if args.start > args.end:
@@ -503,7 +503,7 @@ if args.start <= 3 and args.end >= 3:
 
         logging.info("Changing permissions for the created files")
         subprocess.run(
-            "chmod -R 777 dataset*.csv *.log *.sh >> /dev/null 2>&1",
+            f"chmod -R 777 {os.path.join(args.out_path,'dataset*.csv')} {os.path.join(args.out_path,'*.log')} {os.path.join(args.out_path, '*.sh')} >> /dev/null 2>&1",
             shell=True)
     except Exception as e:
         logging.error(f"Error: {e}")
