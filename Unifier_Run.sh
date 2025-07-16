@@ -3,7 +3,7 @@
 INPUT_PATH="."
 OUTPUT_PATH="."
 touch "$OUTPUT_PATH"/dataprep.log
-echo -n "" > "$OUTPUT_PATH"/dataprep.log
+echo -n "" >"$OUTPUT_PATH"/dataprep.log
 # QUICKSTART OPTIONS, or some stuff that could be interesting to test out
 # --width: width of the video
 # --height: height of the video
@@ -60,9 +60,8 @@ pip cache purge >>/dev/null 2>&1
 echo "$(date '+%Y-%m-%d %H:%M:%S'): Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 TMPDIR=. python3 -m pip install --no-compile torch >>/dev/null 2>&1
 
-# ! IMPORTANT 
+# ! IMPORTANT
 # specify input / output paths
-
 
 # if you are training with each video being a separate class,
 # use this flag: --each-video-one-class to make it work
