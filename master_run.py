@@ -521,11 +521,11 @@ logging.info("(4) Starting the tar sampling")
 if args.start <= 4 and args.end >= 4:
     try:
         logging.info("(4) Starting the video sampling")
-
-        subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
-            shell=True,
-        )
+        # ! IMPORTANT TODO FIX
+        # subprocess.run(
+        #     f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
+        #     shell=True,
+        # )
         logging.info(
             "(4) ---- Installing the requirements for the VideoSamplerRewrite")
         subprocess.run(
@@ -537,7 +537,7 @@ if args.start <= 4 and args.end >= 4:
         arguments = (
             f" --video-input-path  {args.out_path if contains_h264 else args.in_path} "
             f" --dataset-input-path {args.out_path} "
-            f" -out-path {args.out_path} "
+            f" --out-path {args.out_path} "
             f" --frames-per-sample {args.frames_per_sample} "
             f" --number-of-samples {args.number_of_samples} "
             f" --normalize {args.normalize} "
