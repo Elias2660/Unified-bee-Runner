@@ -273,20 +273,20 @@ if args.start <= 0 and args.end >= 0:
                 "Converting .h264 to .mp4, old h264 files can be found in the h264_files folder"
             )
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/h264tomp4.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/h264tomp4.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
         elif contains_mp4:
             if args.optimize_counting:
                 logging.info("Making a fast counts.csv")
                 subprocess.run(
-                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/optimized_make_counts.py')} {arguments} >> dataprep.log 2>&1",
+                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/optimized_make_counts.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                     shell=True,
                 )
             else:
                 logging.info("No conversion needed, making counts.csv")
                 subprocess.run(
-                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/make_counts.py')} {arguments} >> dataprep.log 2>&1",
+                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/make_counts.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                     shell=True,
                 )
         else:
@@ -332,7 +332,7 @@ if args.start <= 1 and args.end >= 1:
                 f" --subtractor {args.background_subtraction_type} "
                 f" --max-workers {args.max_workers_background_subtraction}")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Video_Subtractions/Convert.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Video_Subtractions/Convert.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -378,7 +378,7 @@ if args.start <= 2 and args.end >= 2:
                 f" --end-frame-buffer {args.end_frame_buffer} "
                 f" --splits {args.time_splits} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/time_based_division.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/time_based_division.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -398,7 +398,7 @@ if args.start <= 2 and args.end >= 2:
                 f" --end-frame-buffer {args.end_frame_buffer} "
                 f" --splits {args.k} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/one_class_runner.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/one_class_runner.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -430,7 +430,7 @@ if args.start <= 2 and args.end >= 2:
                 f" --frame-interval {args.frame_interval} "
                 f" --end-frame-buffer {args.end_frame_buffer} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/Make_Dataset.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/Make_Dataset.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -497,7 +497,7 @@ if args.start <= 3 and args.end >= 3:
                 f" --max-dataloader-workers {args.max_dataloader_workers}")
 
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/make_validation_training.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/make_validation_training.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
@@ -557,7 +557,7 @@ if args.start <= 4 and args.end >= 4:
         if args.equalize_samples:
             arguments += " --equalize-samples "
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'VideoSamplerRewrite/Dataprep.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'VideoSamplerRewrite/Dataprep.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
@@ -587,7 +587,7 @@ if args.start <= 5 and args.end >= 5:
             f" --shuffle {20000 // args.frames_per_sample} "
             f" --shardshuffle {20000 // args.frames_per_sample}")
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/utility/webdataset_to_flatbin.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/utility/webdataset_to_flatbin.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
