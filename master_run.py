@@ -159,7 +159,7 @@ try:
 
     logging.info("---- Installing some requirements for the pipeline ----")
     subprocess.run(
-        f"pip install -r {os.path.join(DIR_NAME, 'requirements.txt')} >> /dev/null",
+        f"pip install --no-compile -r {os.path.join(DIR_NAME, 'requirements.txt')} >> /dev/null",
         shell=True,
         executable="/bin/bash",
     )
@@ -246,7 +246,7 @@ if args.start <= 0 and args.end >= 0:
             "(0) ---- Installing the requirements for the Video_Frame_Counter ----"
         )
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'Video_Frame_Counter/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Video_Frame_Counter/requirements.txt')} >> /dev/null",
             shell=True,
             executable="/bin/bash",
         )
@@ -318,7 +318,7 @@ if args.start <= 1 and args.end >= 1:
                 "(1) ---- Installing the requirements for the Video_Subtractions ----"
             )
             subprocess.run(
-                f"pip install -r {os.path.join(DIR_NAME, 'Video_Subtractions/requirements.txt')} >> /dev/null",
+                f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Video_Subtractions/requirements.txt')} >> /dev/null",
                 shell=True,
             )
             
@@ -362,7 +362,7 @@ if args.start <= 2 and args.end >= 2:
             "(2) ---- Installing the requirements for the Dataset_Creator ----"
         )
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'Dataset_Creator/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Dataset_Creator/requirements.txt')} >> /dev/null",
             shell=True,
         )
         if args.test_by_time:
@@ -461,7 +461,7 @@ if args.start <= 3 and args.end >= 3:
         logging.info(
             "(3) ---- Installing the requirements for the bee_analysis ----")
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'bee_analysis/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'bee_analysis/requirements.txt')} >> /dev/null",
             shell=True,
         )
 
@@ -528,13 +528,13 @@ if args.start <= 4 and args.end >= 4:
             f" --out-path {args.out_path} "
         )
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
+            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')} {arguments}",
             shell=True,
         )
         logging.info(
             "(4) ---- Installing the requirements for the VideoSamplerRewrite")
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
             shell=True,
         )
         contains_h264 = any(".h264" in file for file in os.listdir(args.in_path))
