@@ -1,81 +1,192 @@
 import argparse
 """
-ArgParser.py
+Module Name: ArgParser.py
 
-This module is responsible for parsing command-line arguments for the pipeline script.
-It uses the argparse library to define and handle various parameters required for different stages of the pipeline.
-
-Command-line Arguments:
-    -h, --help                     Show this help message and exit.
-    --data-path DATA-PATH          Path to the data, default is ".".
-    --start START                  (unifier) Start the pipeline at the given step, default 0.
-    --end END                      (unifier) End the pipeline at the given step, default 6.
-    --debug                        (unifier) Print debug information and activate debug mode.
-    --background-subtraction-type {MOG2,KNN}
-                                  (background subtraction) Background subtraction type to use.
-    --width WIDTH                  (splitting the data) Width of the images, default 960.
-    --height HEIGHT                (splitting the data) Height of the images, default 720.
-    --number-of-samples NUMBER_OF_SAMPLES
-                                  (sampling) Maximum samples to gather, default 40000.
-    --max-workers-video-sampling MAX_WORKERS_VIDEO_SAMPLING
-                                  (sampling) Number of workers for video sampling, default 3.
-    --frames-per-sample FRAMES_PER_SAMPLE
-                                  (sampling) Number of frames per sample, default 1.
-    --normalize NORMALIZE          (sampling) Normalize images, default True.
-    --out-channels OUT_CHANNELS    (sampling) Number of output channels, default 1.
-    --k K                        (making the splits) Number of folds for cross-validation, default 3.
-    --model MODEL                (making the splits) Model to use, default "alexnet".
-    --fps FPS                    (dataset creation) Frames per second, default 25.
-    --starting-frame STARTING_FRAME
-                                  (dataset creation) Starting frame, default 1.
-    --frame-interval FRAME_INTERVAL
-                                  (dataset creation) Space between frames, default 0.
-    --test-by-time                (dataset creation) Create time-based dataset CSV.
-    --time-splits TIME_SPLITS      (dataset creation) Number of time splits, default 3.
-    --files FILES                (dataset creation) Log files to use.
-    --each-video-one-class        (dataset creation) Treat each video as one class.
-    --end-frame-buffer END_FRAME_BUFFER
-                                  (dataset creation) Frames to buffer at video end, default 0.
-    --seed SEED                  (making the splits) Seed for data randomness, default "01011970".
-    --only_split                  (making the splits) Exit after CSV splitting.
-    --crop_x_offset CROP_X_OFFSET (making the splits) Crop x-offset, default 0.
-    --crop_y_offset CROP_Y_OFFSET (making the splits) Crop y-offset, default 0.
-    --training_only              (making the splits) Only generate the training set, default False.
-    --optimize-counting          (frame counting) Optimize frame counting for .mp4.
-    --max-workers-frame-counter MAX_WORKERS_FRAME_COUNTER
-                                  (frame counting) Workers for frame counting, default 20.
-    --max-workers-background-subtraction MAX_WORKERS_BACKGROUND_SUBTRACTION
-                                  (background subtraction) Workers for background subtraction, default 10.
-    --epochs EPOCHS              (training) Number of epochs, default 10.
-    --gpus GPUS                  (training) Number of GPUs, default 1.
-    --binary-training-optimization
-                                  (training) Convert and train with binary files.
-    --use-dataloader-workers     (training) Use dataloader workers.
-    --max-dataloader-workers MAX_DATALOADER_WORKERS
-                                  (training) Number of dataloader workers, default 3.
-    --loss-fn LOSS_FN            (training) Loss function, default "CrossEntropyLoss".
-    --gradcam-cnn-model-layer GRADCAM_CNN_MODEL_LAYER [GRADCAM_CNN_MODEL_LAYER ...]
-                                  (training) Model layers for gradcam plots, default ['model_a.4.0', 'model_b.4.0'].
-    --crop                     (sampling) Crop the images to the correct size.
-    --equalize-samples         (sampling) Equalize sample classes.
-    --dataset-writing-batch-size DATASET_WRITING_BATCH_SIZE
-                                  (sampling) Batch size for writing dataset, default 30.
-    --max-threads-pic-saving MAX_THREADS_PIC_SAVING
-                                  (sampling) Threads for picture saving, default 4.
-    --max-batch-size-sampling MAX_BATCH_SIZE_SAMPLING
-                                  (sampling) Maximum batch size for video sampling, default 5.
-    --max-workers-tar-writing MAX_WORKERS_TAR_WRITING
-                                  (sampling) Workers for writing tar files, default 4.
-    --y-offset Y_OFFSET          Y offset for crop, default 0.
-    --out-width OUT_WIDTH        Width of the output image, default 400.
-    --out-height OUT_HEIGHT      Height of the output image, default 400.
+Description:
+    Defines and parses command‑line arguments for the unified bee runner pipeline.
+    Covers all stages from video conversion through model training with k‑fold cross‑validation.
+    Flags are organized by pipeline chapter and control behavior such as:
+      • Video conversion (.h264→.mp4, frame counting)
+      • Background subtraction (MOG2 or KNN)
+      • Dataset creation (time‑based, log‑based, one‑class)
+      • Data splitting (k‑fold, CSV generation)
+      • Video sampling (frame extraction, tar packaging)
+      • Model training (SLURM scripts, binary optimization, GradCAM)
 
 Usage:
-    This script is intended to be used as part of a larger pipeline. It is typically invoked from the command line or another script, such as master_run.py.
+    from ArgParser import get_args
+    args = get_args()
 
-Example:
-    python ArgParser.py --data-path /path/to/data --start 0 --end 6 --width 960 --height 720
+    # Or standalone:
+    python ArgParser.py \
+      --data-path <input_dir> \
+      --out-path <output_dir> \
+      --start 0 --end 5 \
+      [--background-subtraction-type MOG2] \
+      [--fps 25 --starting-frame 1 --frame-interval 0] \
+      [--k 3 --model alexnet] \
+      [--number-of-samples 40000 --frames-per-sample 1] \
+      [--optimize-counting] \
+      [--epochs 10 --gpus 1] \
+      [--binary-training-optimization] \
+      [--use-dataloader-workers --max-dataloader-workers 3] \
+      [--loss-fn CrossEntropyLoss] \
+      [--gradcam-cnn-model-layer model_a.4.0 model_b.4.0] \
+      [--crop --out-width 400 --out-height 400] \
+      [--equalize-samples] \
+      [--debug]
 
+Arguments:
+    --data-path                   Base input directory (default: ".")
+    --out-path                    Output directory for all generated files
+    --start                       First pipeline chapter to run (0–5, default: 0)
+    --end                         Last pipeline chapter to run (0–5, default: 6)
+    --debug                       Enable DEBUG logging
+
+    # Video Conversion / Frame Counting
+    --optimize-counting           Fast .mp4 frame counting (uses metadata)
+    --max-workers-frame-counter   Workers for frame counting (default: 20)
+
+    # Background Subtraction
+    --background-subtraction-type MOG2|KNN (default: None)
+    --max-workers-background-subtraction Workers for parallel subtraction (default: 10)
+
+    # Dataset Creation
+    --fps                         Frames per second (default: 25)
+    --starting-frame              Start frame offset (default: 1)
+    --frame-interval              Frame interval between segments (default: 0)
+    --end-frame-buffer            Frames to buffer at end (default: 0)
+    --test-by-time                Time‑based dataset splitting
+    --time-splits                 Number of time splits (default: 3)
+    --files                       Comma‑separated log files list
+    --each-video-one-class        Treat each video as its own class
+
+    # Data Splitting
+    --k                           Number of folds for cross‑validation (default: 3)
+    --model                       Model name for training scripts (default: alexnet)
+    --seed                        RNG seed for splitting (default: "01011970")
+    --only_split                  Exit after CSV splitting
+    --training_only               Generate only training scripts
+    --crop_x_offset, --crop_y_offset  Crop offsets (px, default: 0)
+    --width, --height             Image dimensions for splitting/training (default: 960×720)
+
+    # Video Sampling
+    --number-of-samples           Max samples per video (default: 40000)
+    --max-workers-video-sampling  Workers for sampling (default: 3)
+    --frames-per-sample           Frames per sample (default: 1)
+    --normalize                   Normalize images (default: True)
+    --out-channels                Output channels (default: 1)
+    --crop                        Enable cropping to output size
+    --out-width, --out-height     Crop dimensions (px, default: 400×400)
+    --equalize-samples            Equalize class sample counts
+    --dataset-writing-batch-size  Batch size for tar writing (default: 30)
+    --max-threads-pic-saving      Threads for image saving (default: 4)
+    --max-batch-size-sampling     Sample batch size (default: 5)
+    --max-workers-tar-writing     Workers for tar writing (default: 4)
+
+    # Training
+    --epochs                      Number of training epochs (default: 10)
+    --gpus                        GPUs per SLURM job (default: 1)
+    --binary-training-optimization
+                                  Convert and train with binary files
+    --use-dataloader-workers      Enable DataLoader multiprocessing
+    --max-dataloader-workers      Number of DataLoader workers (default: 3)
+    --loss-fn                     Loss function choice (default: CrossEntropyLoss)
+    --gradcam-cnn-model-layer     GradCAM layers list (default: model_a.4.0, model_b.4.0)
+""""""
+Module Name: ArgParser.py
+
+Description:
+    Defines and parses command‑line arguments for the unified bee runner pipeline.
+    Covers all stages from video conversion through model training with k‑fold cross‑validation.
+    Flags are organized by pipeline chapter and control behavior such as:
+      • Video conversion (.h264→.mp4, frame counting)
+      • Background subtraction (MOG2 or KNN)
+      • Dataset creation (time‑based, log‑based, one‑class)
+      • Data splitting (k‑fold, CSV generation)
+      • Video sampling (frame extraction, tar packaging)
+      • Model training (SLURM scripts, binary optimization, GradCAM)
+
+Usage:
+    from ArgParser import get_args
+    args = get_args()
+
+    # Or standalone:
+    python ArgParser.py \
+      --data-path <input_dir> \
+      --out-path <output_dir> \
+      --start 0 --end 5 \
+      [--background-subtraction-type MOG2] \
+      [--fps 25 --starting-frame 1 --frame-interval 0] \
+      [--k 3 --model alexnet] \
+      [--number-of-samples 40000 --frames-per-sample 1] \
+      [--optimize-counting] \
+      [--epochs 10 --gpus 1] \
+      [--binary-training-optimization] \
+      [--use-dataloader-workers --max-dataloader-workers 3] \
+      [--loss-fn CrossEntropyLoss] \
+      [--gradcam-cnn-model-layer model_a.4.0 model_b.4.0] \
+      [--crop --out-width 400 --out-height 400] \
+      [--equalize-samples] \
+      [--debug]
+
+Arguments:
+    --data-path                   Base input directory (default: ".")
+    --out-path                    Output directory for all generated files
+    --start                       First pipeline chapter to run (0–5, default: 0)
+    --end                         Last pipeline chapter to run (0–5, default: 6)
+    --debug                       Enable DEBUG logging
+
+    # Video Conversion / Frame Counting
+    --optimize-counting           Fast .mp4 frame counting (uses metadata)
+    --max-workers-frame-counter   Workers for frame counting (default: 20)
+
+    # Background Subtraction
+    --background-subtraction-type MOG2|KNN (default: None)
+    --max-workers-background-subtraction Workers for parallel subtraction (default: 10)
+
+    # Dataset Creation
+    --fps                         Frames per second (default: 25)
+    --starting-frame              Start frame offset (default: 1)
+    --frame-interval              Frame interval between segments (default: 0)
+    --end-frame-buffer            Frames to buffer at end (default: 0)
+    --test-by-time                Time‑based dataset splitting
+    --time-splits                 Number of time splits (default: 3)
+    --files                       Comma‑separated log files list
+    --each-video-one-class        Treat each video as its own class
+
+    # Data Splitting
+    --k                           Number of folds for cross‑validation (default: 3)
+    --model                       Model name for training scripts (default: alexnet)
+    --seed                        RNG seed for splitting (default: "01011970")
+    --only_split                  Exit after CSV splitting
+    --training_only               Generate only training scripts
+    --crop_x_offset, --crop_y_offset  Crop offsets (px, default: 0)
+    --width, --height             Image dimensions for splitting/training (default: 960×720)
+
+    # Video Sampling
+    --number-of-samples           Max samples per video (default: 40000)
+    --max-workers-video-sampling  Workers for sampling (default: 3)
+    --frames-per-sample           Frames per sample (default: 1)
+    --normalize                   Normalize images (default: True)
+    --out-channels                Output channels (default: 1)
+    --crop                        Enable cropping to output size
+    --out-width, --out-height     Crop dimensions (px, default: 400×400)
+    --equalize-samples            Equalize class sample counts
+    --dataset-writing-batch-size  Batch size for tar writing (default: 30)
+    --max-threads-pic-saving      Threads for image saving (default: 4)
+    --max-batch-size-sampling     Sample batch size (default: 5)
+    --max-workers-tar-writing     Workers for tar writing (default: 4)
+
+    # Training
+    --epochs                      Number of training epochs (default: 10)
+    --gpus                        GPUs per SLURM job (default: 1)
+    --binary-training-optimization
+                                  Convert and train with binary files
+    --use-dataloader-workers      Enable DataLoader multiprocessing
+    --max-dataloader-workers      Number of DataLoader workers (default: 3)
+    --loss-fn                     Loss function choice (default: CrossEntropyLoss)
+    --gradcam-cnn-model-layer     GradCAM layers list (default: model_a.4.0, model_b.4.0)
 """
 
 

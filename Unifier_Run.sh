@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# ! IMPORTANT TO SPECIFY INPUT AND OUTPUT PATH
 INPUT_PATH="."
 OUTPUT_PATH="."
-touch "$OUTPUT_PATH"/dataprep.log
-echo -n "" >"$OUTPUT_PATH"/dataprep.log
+
+touch $OUTPUT_PATH/dataprep.log
+echo -n "" > $OUTPUT_PATH/dataprep.log
 # QUICKSTART OPTIONS, or some stuff that could be interesting to test out
 # --width: width of the video
 # --height: height of the video

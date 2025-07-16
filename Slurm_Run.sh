@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Submitting slurm job. Remember to edit the Unifier_Run.sh if you want to make changes."
+echo "Submitting slurm job. Remember to edit the Unifier_Run.sh (especially if you want to change input/output) if you want to make changes."
 
 sbatch \
   -n 8 \
