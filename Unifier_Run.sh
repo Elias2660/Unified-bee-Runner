@@ -2,8 +2,8 @@
 
 INPUT_PATH="."
 OUTPUT_PATH="."
-touch $OUTPUT_PATH/dataprep.log
-echo -n "" > $OUTPUT_PATH/dataprep.log
+touch "$OUTPUT_PATH"/dataprep.log
+echo -n "" > "$OUTPUT_PATH"/dataprep.log
 # QUICKSTART OPTIONS, or some stuff that could be interesting to test out
 # --width: width of the video
 # --height: height of the video
@@ -68,7 +68,7 @@ TMPDIR=. python3 -m pip install --no-compile torch >>/dev/null 2>&1
 # use this flag: --each-video-one-class to make it work
 python3 Unified-bee-Runner/master_run.py \
   --equalize-samples --optimize-counting --binary-training-optimization --use-dataloader-workers \
-  --in-path $INPUT_PATH --out-path $OUTPUT_PATH \
+  --in-path "$INPUT_PATH" --out-path "$OUTPUT_PATH" \
   --height 720 --frame-interval 50 \
   --width 960 \
   --number-of-samples 10000 --max-workers-video-sampling 6 \
