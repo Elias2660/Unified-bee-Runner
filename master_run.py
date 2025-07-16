@@ -1,91 +1,108 @@
 """
+Module Name: master_run.py
 
-This script is organized in chapters, so you can use the start and end flags to run specific chapters. The chapters are as follows:
+Description:
+    Orchestrates the end‑to‑end processing pipeline for bee behavior videos on Rutgers CS infrastructure.
+    Supports chapters for video conversion, background subtraction, dataset creation, data splitting,
+    video sampling, and model training with k‑fold cross‑validation. Generates all intermediate CSVs,
+    shell scripts, and SLURM submission scripts needed for preprocessing and training.
+
+Usage:
+    python master_run.py \
+        --data-path <input_dir> \
+        --out-path <output_dir> \
+        [--start <chapter>] \
+        [--end <chapter>] \
+        [--debug] \
+        [--background-subtraction-type {MOG2,KNN}] \
+        [--width <px>] [--height <px>] \
+        [--number-of-samples <n>] \
+        [--max-workers-video-sampling <n>] \
+        [--frames-per-sample <n>] \
+        [--normalize <True|False>] \
+        [--out-channels <n>] \
+        [--k <folds>] \
+        [--model <name>] \
+        [--fps <fps>] \
+        [--starting-frame <n>] \
+        [--frame-interval <n>] \
+        [--test-by-time] \
+        [--time-splits <n>] \
+        [--files <log1,log2,...>] \
+        [--each-video-one-class] \
+        [--end-frame-buffer <n>] \
+        [--seed <value>] \
+        [--only_split] \
+        [--crop_x_offset <px>] [--crop_y_offset <px>] \
+        [--training_only] \
+        [--optimize-counting] \
+        [--max-workers-frame-counter <n>] \
+        [--max-workers-background-subtraction <n>] \
+        [--epochs <n>] \
+        [--gpus <n>] \
+        [--binary-training-optimization] \
+        [--use-dataloader-workers] \
+        [--max-dataloader-workers <n>] \
+        [--loss-fn <fn>] \
+        [--gradcam-cnn-model-layer <layer>...] \
+        [--crop] \
+        [--equalize-samples] \
+        [--dataset-writing-batch-size <n>] \
+        [--max-threads-pic-saving <n>] \
+        [--max-batch-size-sampling <n>] \
+        [--max-workers-tar-writing <n>] \
+        [--out-width <px>] [--out-height <px>]
+
+Chapters:
+    0: Video Conversion (.h264→.mp4 & counts.csv)
+    1: Background Subtraction (MOG2/KNN)
+    2: Dataset Creation (Make_Dataset.py / time_based_division.py / one_class_runner.py)
+    3: Data Splitting (k‑fold CSVs & sbatch scripts)
+    4: Video Sampling (frame extraction & tar creation)
+    5: Model Training (SLURM jobs, optional binary conversion)
 
 Arguments:
-    -h, --help                     Show this help message and exit.
-    --data_path DATA_PATH          Path to the data, default is ".".
-    --start START                  (unifier) Start the pipeline at the given step, default 0.
-    --end END                      (unifier) End the pipeline at the given step, default 6.
-    --debug                        (unifier) Print debug information and activate debug mode.
-    --background-subtraction-type {MOG2,KNN}
-                                  (background subtraction) Background subtraction type to use.
-    --width WIDTH                  (splitting the data) Width of the images, default 960.
-    --height HEIGHT                (splitting the data) Height of the images, default 720.
-    --number-of-samples NUMBER_OF_SAMPLES
-                                  (sampling) Maximum samples to gather, default 40000.
-    --max-workers-video-sampling MAX_WORKERS_VIDEO_SAMPLING
-                                  (sampling) Number of workers for video sampling, default 3.
-    --frames-per-sample FRAMES_PER_SAMPLE
-                                  (sampling) Number of frames per sample, default 1.
-    --normalize NORMALIZE          (sampling) Normalize images, default True.
-    --out-channels OUT_CHANNELS    (sampling) Number of output channels, default 1.
-    --k K                        (making the splits) Number of folds for cross-validation, default 3.
-    --model MODEL                (making the splits) Model to use, default "alexnet".
-    --fps FPS                    (dataset creation) Frames per second, default 25.
-    --starting-frame STARTING_FRAME
-                                  (dataset creation) Starting frame, default 1.
-    --frame-interval FRAME_INTERVAL
-                                  (dataset creation) Space between frames, default 0.
-    --test-by-time                (dataset creation) Create time-based dataset CSV.
-    --time-splits TIME_SPLITS      (dataset creation) Number of time splits, default 3.
-    --files FILES                (dataset creation) Log files to use.
-    --each-video-one-class        (dataset creation) Treat each video as one class.
-    --end-frame-buffer END_FRAME_BUFFER
-                                  (dataset creation) Frames to buffer at video end, default 0.
-    --seed SEED                  (making the splits) Seed for data randomness, default "01011970".
-    --only_split                  (making the splits) Exit after CSV splitting.
-    --crop_x_offset CROP_X_OFFSET (making the splits) Crop x-offset, default 0.
-    --crop_y_offset CROP_Y_OFFSET (making the splits) Crop y-offset, default 0.
-    --training_only              (making the splits) Only generate the training set, default False.
-    --optimize-counting          (frame counting) Optimize frame counting for .mp4.
-    --max-workers-frame-counter MAX_WORKERS_FRAME_COUNTER
-                                  (frame counting) Workers for frame counting, default 20.
-    --max-workers-background-subtraction MAX_WORKERS_BACKGROUND_SUBTRACTION
-                                  (background subtraction) Workers for background subtraction, default 10.
-    --epochs EPOCHS              (training) Number of epochs, default 10.
-    --gpus GPUS                  (training) Number of GPUs, default 1.
-    --binary-training-optimization
-                                  (training) Convert and train with binary files.
-    --use-dataloader-workers     (training) Use dataloader workers.
-    --max-dataloader-workers MAX_DATALOADER_WORKERS
-                                  (training) Number of dataloader workers, default 3.
-    --loss-fn LOSS_FN            (training) Loss function, default "CrossEntropyLoss".
-    --gradcam-cnn-model-layer GRADCAM_CNN_MODEL_LAYER [GRADCAM_CNN_MODEL_LAYER ...]
-                                  (training) Model layers for gradcam plots, default ['model_a.4.0', 'model_b.4.0'].
-    --crop                     (sampling) Crop the images to the correct size.
-    --equalize-samples         (sampling) Equalize sample classes.
-    --dataset-writing-batch-size DATASET_WRITING_BATCH_SIZE
-                                  (sampling) Batch size for writing dataset, default 30.
-    --max-threads-pic-saving MAX_THREADS_PIC_SAVING
-                                  (sampling) Threads for picture saving, default 4.
-    --max-batch-size-sampling MAX_BATCH_SIZE_SAMPLING
-                                  (sampling) Maximum batch size for video sampling, default 5.
-    --max-workers-tar-writing MAX_WORKERS_TAR_WRITING
-                                  (sampling) Workers for writing tar files, default 4.
-    --y-offset Y_OFFSET          Y offset for crop, default 0.
-    --out-width OUT_WIDTH        Width of the output image, default 400.
-    --out-height OUT_HEIGHT      Height of the output image, default 400.
-
-
+    --data-path                 Base directory for all video/log files.
+    --out-path                  Where all outputs, logs, and scripts are written.
+    --start, --end              Pipeline range of chapters to run (inclusive).
+    --debug                     Enable DEBUG‑level logging.
+    --background-subtraction-type
+                                Choose MOG2 or KNN for step 1.
+    --width, --height           Image crop dimensions for splitting/training.
+    --number-of-samples         Max frames to sample per video.
+    --max-workers-video-sampling
+                                Workers for frame sampling.
+    --frames-per-sample         Frames extracted per sample.
+    --normalize, --out-channels
+                                Image normalization and channel settings.
+    --k, --model                Folds and model name for cross‑validation.
+    --fps, --starting-frame,
+    --frame-interval, --end-frame-buffer
+                                Controls dataset creation timing and buffers.
+    --test-by-time, --time-splits,
+    --files, --each-video-one-class
+                                Variants for dataset CSV generation.
+    --seed                      RNG seed for reproducibility.
+    --only_split, --training_only
+                                Control split-only or training-only modes.
+    --optimize-counting,
+    --max-workers-frame-counter,
+    --max-workers-background-subtraction
+                                Parallelization flags for counting and subtraction.
+    --epochs, --gpus, --binary-training-optimization,
+    --use-dataloader-workers, --max-dataloader-workers, --loss-fn,
+    --gradcam-cnn-model-layer
+                                Training configuration options.
+    --crop, --equalize-samples,
+    --dataset-writing-batch-size,
+    --max-threads-pic-saving,
+    --max-batch-size-sampling,
+    --max-workers-tar-writing,
+    --out-width, --out-height
+                                Sampling and dataset write options.
 
 Logging:
-The script uses logging to provide information about the progress and any errors encountered during the execution of the pipeline.
-Unified Bee Runner Pipeline Script
-
-This script orchestrates the entire pipeline for processing and analyzing bee-related datasets. The pipeline is divided into several steps, each performing a specific task. The steps can be controlled using the `--start` and `--end` arguments, allowing users to run specific parts of the pipeline.
-
-Chapter System:
-This script is organized in chapters, so you can use the start and end flags to run specific chapters. The chapters are as follows:
-0. Video Conversions
-1. Background Subtraction
-2. Dataset Creation
-3. Data Splitting
-4. Video Sampling
-5. Model Training -> this will create slurm jobs given the number of k-folds that you have requested
-
-- `--start`: The step with which to start the pipeline.
-- `--end`: The step with which to end the pipeline.
+    Uses Python’s logging module with time‑stamped INFO/DEBUG messages.
 """
 import getpass
 import logging
@@ -105,36 +122,36 @@ logging.basicConfig(format="%(asctime)s: %(message)s",
 
 DIR_NAME = os.path.dirname(os.path.abspath(__file__))
 
-with open("RUN_DESCRIPTION.log", "w+") as rd:
-    rd.write(
-        f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n")
-    rd.write(f"path: {DIR_NAME}\n")
-
-    user = getpass.getuser()
-    rd.write(f"User: {user}\n")
-
-    branch = (subprocess.check_output(
-        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-        cwd=DIR_NAME).decode("utf-8").strip())
-
-    rd.write(f"branch of Unified-bee-Runner: {branch}\n")
-
-    commit = (subprocess.check_output(["git", "rev-parse", "HEAD"],
-                                      cwd=DIR_NAME).decode("utf-8").strip())
-    rd.write(f"Version / Commit: {commit}\n")
-
-    python_version = subprocess.check_output(["which",
-                                              "python3"]).decode().strip()
-    rd.write(f"Python Version: {python_version}\n")
-
-    system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
-    rd.write(f"system: {system_info}\n")
-
 try:
     args = get_args()
+
+    with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
+        rd.write(
+            f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n"
+        )
+        rd.write(f"path: {DIR_NAME}\n")
+
+        user = getpass.getuser()
+        rd.write(f"User: {user}\n")
+
+        branch = (subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=DIR_NAME).decode("utf-8").strip())
+
+        rd.write(f"branch of Unified-bee-Runner: {branch}\n")
+
+        commit = (subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=DIR_NAME).decode("utf-8").strip())
+        rd.write(f"Version / Commit: {commit}\n")
+
+        python_version = subprocess.check_output(["which",
+                                                  "python3"]).decode().strip()
+        rd.write(f"Python Version: {python_version}\n")
+
+        system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
+        rd.write(f"system: {system_info}\n")
     logging.info("---- Starting the pipeline ----")
-    path = args.data_path
-    os.chdir(path)
 
     logging.info("---- Upgrading pip ----")
     subprocess.run("pip install --upgrade pip >> /dev/null",
@@ -146,7 +163,7 @@ try:
     # add some protections to prevent deletions of data
     # of course, it'll be better with more backups
     protected_file_list = [
-        file for file in os.listdir()
+        file for file in os.listdir(args.in_path)
         if (file.endswith(".txt") or file.endswith(".mp4")
             or file.endswith(".txt"))
     ]
@@ -159,18 +176,18 @@ try:
 
     logging.info("---- Installing some requirements for the pipeline ----")
     subprocess.run(
-        f"pip install -r {os.path.join(DIR_NAME, 'requirements.txt')} >> /dev/null",
+        f"pip install --no-compile -r {os.path.join(DIR_NAME, 'requirements.txt')} >> /dev/null",
         shell=True,
         executable="/bin/bash",
     )
-    file_list = os.listdir()
+
     logging.info("(0) Starting the pipeline")
 except Exception as e:
     logging.error(f"Error: {e}")
     raise ValueError("Something went wrong in the beginning")
 
 # write the information into the description, to be stored later as part of the results
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Run Settings --\n")
     run_desc.write(f"Attempted Samples Per Video: {args.number_of_samples}\n")
     run_desc.write(f"Frames per Sample: {args.frames_per_sample}\n")
@@ -187,11 +204,19 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
     run_desc.write(f"Use .bin Files: {args.binary_training_optimization}\n")
     run_desc.write(f"Use dataloader workers: {args.use_dataloader_workers}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+    # path stuff
+    rd.write(f"Data Path: {args.in_path}\n")
+    rd.write(f"Experiment Path: {args.out_path}\n")
+
+    # path stuff
+    run_desc.write(f"Data Path: {args.in_path}\n")
+    run_desc.write(f"Out Path: {args.out_path}\n")
+
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Parsed Arguments --\n")
     run_desc.write(f"Parsed Arguments: {args}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Miscellaneous Settings --\n")
     run_desc.write(f"Seed: {args.seed}\n")
     run_desc.write(f"Normalize: {args.normalize}\n")
@@ -199,7 +224,7 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
     run_desc.write(f"Height: {args.height}\n")
     run_desc.write(f"Frames per Second: {args.fps}\n")
 
-with open("RUN_DESCRIPTION.log", "a") as run_desc:
+with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Additional Options --\n")
     run_desc.write(f"Crop Enabled: {args.crop}\n")
     if args.crop:
@@ -220,8 +245,10 @@ with open("RUN_DESCRIPTION.log", "a") as run_desc:
 # stupid ilab umask makes files unreadable / undeletable / uneditable to everyone
 # except the creators, which is great for school projects but not so
 # good for shared research / data projects
-subprocess.run("chmod -R 777 Unified-bee-Runner *.log venv >> /dev/null 2>&1",
-               shell=True)
+subprocess.run(
+    f"chmod -R 777 Unified-bee-Runner {os.path.join(args.out_path, '*.log')} venv >> /dev/null 2>&1",
+    shell=True,
+)
 
 if args.start > args.end:
     raise ValueError("You can't have the start be higher than the end")
@@ -241,16 +268,21 @@ if args.start <= 0 and args.end >= 0:
             "(0) ---- Installing the requirements for the Video_Frame_Counter ----"
         )
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'Video_Frame_Counter/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Video_Frame_Counter/requirements.txt')} >> /dev/null",
             shell=True,
             executable="/bin/bash",
         )
 
-        file_list = os.listdir(path)
+        file_list = os.listdir(args.in_path)
+        logging.info(f"file_list: {file_list}")
         contains_h264 = any(".h264" in file for file in file_list)
         contains_mp4 = any(".mp4" in file for file in file_list)
 
-        arguments = (f" --path {path} "
+        # for the path, the output .mp4 videos, if they converted them,
+        # would appear in the --out-path directory
+        # the counts file
+        arguments = (f" --video-filepath {args.in_path} "
+                     f" --output-filepath {args.out_path}"
                      f" --max-workers {args.max_workers_frame_counter} ")
 
         logging.info("(0) ---- Running Video Conversions Sections ----")
@@ -263,20 +295,20 @@ if args.start <= 0 and args.end >= 0:
                 "Converting .h264 to .mp4, old h264 files can be found in the h264_files folder"
             )
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/h264tomp4.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/h264tomp4.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
         elif contains_mp4:
             if args.optimize_counting:
                 logging.info("Making a fast counts.csv")
                 subprocess.run(
-                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/optimized_make_counts.py')} {arguments} >> dataprep.log 2>&1",
+                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/optimized_make_counts.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                     shell=True,
                 )
             else:
                 logging.info("No conversion needed, making counts.csv")
                 subprocess.run(
-                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/make_counts.py')} {arguments} >> dataprep.log 2>&1",
+                    f"python3 {os.path.join(DIR_NAME, 'Video_Frame_Counter/make_counts.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                     shell=True,
                 )
         else:
@@ -285,7 +317,10 @@ if args.start <= 0 and args.end >= 0:
             )
 
         logging.info("(0) ---- Changing Permissions for the Repository----")
-        subprocess.run("chmod 777 counts.csv >> /dev/null 2>&1", shell=True)
+        subprocess.run(
+            f"chmod 777 {os.path.join(args.out_path, 'counts.csv')} >> /dev/null 2>&1",
+            shell=True,
+        )
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 0")
@@ -308,15 +343,22 @@ if args.start <= 1 and args.end >= 1:
                 "(1) ---- Installing the requirements for the Video_Subtractions ----"
             )
             subprocess.run(
-                f"pip install -r {os.path.join(DIR_NAME, 'Video_Subtractions/requirements.txt')} >> /dev/null",
+                f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Video_Subtractions/requirements.txt')} >> /dev/null",
                 shell=True,
             )
 
+            # if the data directory contains .h264 files, then the files have
+            # been converted to .mp4 in the args.out_path directory
+            contains_h264 = any(".h264" in file
+                                for file in os.listdir(args.in_path))
+
             arguments = (
+                f" --path {args.in_path if not contains_h264 else args.out_path} "
+                f" --dest-dir {os.path.join(args.out_path, 'unsubtracted_videos')}"
                 f" --subtractor {args.background_subtraction_type} "
                 f" --max-workers {args.max_workers_background_subtraction}")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Video_Subtractions/Convert.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Video_Subtractions/Convert.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -346,7 +388,7 @@ if args.start <= 2 and args.end >= 2:
             "(2) ---- Installing the requirements for the Dataset_Creator ----"
         )
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'Dataset_Creator/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'Dataset_Creator/requirements.txt')} >> /dev/null",
             shell=True,
         )
         if args.test_by_time:
@@ -354,14 +396,15 @@ if args.start <= 2 and args.end >= 2:
                 "Deciding the test by time, given the passing of the --test-by-time button"
             )
             arguments = (
-                f" --path {path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path}"
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
                 f" --end-frame-buffer {args.end_frame_buffer} "
                 f" --splits {args.time_splits} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/time_based_division.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/time_based_division.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -373,14 +416,15 @@ if args.start <= 2 and args.end >= 2:
                 "Creating a one class dataset, given the passing of the --end-frame-buffer argument"
             )
             arguments = (
-                f" --path {path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path}"
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --start-frame {args.starting_frame} "
                 f" --end-frame-buffer {args.end_frame_buffer} "
                 f" --splits {args.k} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/one_class_runner.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/one_class_runner.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -403,7 +447,8 @@ if args.start <= 2 and args.end >= 2:
                 string_log_list = args.files
 
             arguments = (
-                f" --path {path} "
+                f" --in-path {args.in_path} "
+                f" --out-path {args.out_path} "
                 # adding these options in case they need to be changed in the future
                 f" --counts counts.csv "
                 f" --files '{string_log_list}' "
@@ -411,7 +456,7 @@ if args.start <= 2 and args.end >= 2:
                 f" --frame-interval {args.frame_interval} "
                 f" --end-frame-buffer {args.end_frame_buffer} ")
             subprocess.run(
-                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/Make_Dataset.py')} {arguments} >> dataprep.log 2>&1",
+                f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/Make_Dataset.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
                 shell=True,
             )
 
@@ -420,8 +465,10 @@ if args.start <= 2 and args.end >= 2:
 
         # changing the perms for the created dataset*.csv files
         logging.info("Changing the permissions for the created files")
-        subprocess.run("chmod -R 777 dataset*.csv *.bak >> /dev/null 2>&1",
-                       shell=True)
+        subprocess.run(
+            f"chmod -R 777 {os.path.join(args.out_path, 'dataset*.csv')} {os.path.join(args.out_path, '*.bak')} >> /dev/null 2>&1",
+            shell=True,
+        )
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 2")
@@ -442,11 +489,13 @@ if args.start <= 3 and args.end >= 3:
         logging.info(
             "(3) ---- Installing the requirements for the bee_analysis ----")
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'bee_analysis/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'bee_analysis/requirements.txt')} >> /dev/null",
             shell=True,
         )
 
         arguments = (
+            f" --in-path {args.in_path} "
+            f" --out-path {args.out_path} "
             f" --k {args.k} "
             f" --model {args.model} "
             f" --gpus {args.gpus} "
@@ -476,14 +525,15 @@ if args.start <= 3 and args.end >= 3:
                 f" --max-dataloader-workers {args.max_dataloader_workers}")
 
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/make_validation_training.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/make_validation_training.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
         logging.info("Changing permissions for the created files")
         subprocess.run(
-            "chmod -R 777 dataset*.csv *.log *.sh >> /dev/null 2>&1",
-            shell=True)
+            f"chmod -R 777 {os.path.join(args.out_path, 'dataset*.csv')} {os.path.join(args.out_path, '*.log')} {os.path.join(args.out_path, '*.sh')} >> /dev/null 2>&1",
+            shell=True,
+        )
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 3")
@@ -501,19 +551,24 @@ if args.start <= 4 and args.end >= 4:
     try:
         logging.info("(4) Starting the video sampling")
 
+        arguments = f" --in-path {args.out_path} " f" --out-path {args.out_path} "
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
+            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')} {arguments}",
             shell=True,
         )
         logging.info(
             "(4) ---- Installing the requirements for the VideoSamplerRewrite")
         subprocess.run(
-            f"pip install -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
+            f"pip install --no-compile -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
             shell=True,
         )
+        contains_h264 = any(".h264" in file
+                            for file in os.listdir(args.in_path))
 
         arguments = (
-            f" --dataset_path {path} "
+            f" --video-input-path  {args.out_path if contains_h264 else args.in_path} "
+            f" --dataset-input-path {args.out_path} "
+            f" --out-path {args.out_path} "
             f" --frames-per-sample {args.frames_per_sample} "
             f" --number-of-samples {args.number_of_samples} "
             f" --normalize {args.normalize} "
@@ -533,7 +588,7 @@ if args.start <= 4 and args.end >= 4:
         if args.equalize_samples:
             arguments += " --equalize-samples "
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'VideoSamplerRewrite/Dataprep.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'VideoSamplerRewrite/Dataprep.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
@@ -556,14 +611,14 @@ if args.start <= 5 and args.end >= 5:
     # shell function to pass for multiprocessing
     def create_bin_file(file, DIR_NAME, args):
         arguments = (
-            f" {file} "
+            f" {os.path.join(args.out_path, file)} "
             f" --entries {' '.join([f'{i}.png' for i in range(args.frames_per_sample)])} cls "
             f" --handler_overrides cls stoi "
-            f" --output {file.replace('tar', 'bin')} "
+            f" --output {os.path.join(args.out_path, file.replace('tar', 'bin'))} "
             f" --shuffle {20000 // args.frames_per_sample} "
             f" --shardshuffle {20000 // args.frames_per_sample}")
         subprocess.run(
-            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/utility/webdataset_to_flatbin.py')} {arguments} >> dataprep.log 2>&1",
+            f"python3 {os.path.join(DIR_NAME, 'bee_analysis/utility/webdataset_to_flatbin.py')} {arguments} >> {args.out_path}/dataprep.log 2>&1",
             shell=True,
         )
 
@@ -571,7 +626,9 @@ if args.start <= 5 and args.end >= 5:
         logging.info(
             "(5) Creating .bin files given passing of --binary-training-optimization"
         )
-        file_list = [file for file in os.listdir() if file.endswith(".tar")]
+        file_list = [
+            file for file in os.listdir(args.out_path) if file.endswith(".tar")
+        ]
 
         count = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=min(int(count /
@@ -581,13 +638,22 @@ if args.start <= 5 and args.end >= 5:
         logging.info("Bin files created.")
 
         # make sure that everyone can analyze these new files
-        subprocess.run("chmod -R 777 *.bin >> /dev/null 2>&1", shell=True)
+        subprocess.run(
+            f"chmod -R 777 {os.path.join(args.out_path, '*.bin')} >> /dev/null 2>&1",
+            shell=True,
+        )
 
     try:
         subprocess.run(
-            "chmod -R 777 *.log *.sh Unified-bee-Runner >> /dev/null 2>&1",
-            shell=True)
-        subprocess.run("./training-run.sh", shell=True)
+            f"chmod -R 777 Unified-bee-Runner >> /dev/null 2>&1",
+            shell=True,
+        )
+        os.chdir(args.out_path)
+        subprocess.run(
+            f"chmod -R 777 {os.path.join('*.log')} {os.path.join('*.sh')} >> /dev/null 2>&1",
+            shell=True,
+        )
+        subprocess.run(f"./{os.path.join('training-run.sh')}", shell=True)
         logging.info("Submitted executors for training")
         logging.info("Pipeline complete")
     except Exception as e:
