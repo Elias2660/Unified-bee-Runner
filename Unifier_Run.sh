@@ -58,7 +58,7 @@ echo "$(date '+%Y-%m-%d %H:%M:%S'): Purging unwanted dependencies and pip's cach
 pip cache purge >>/dev/null 2>&1
 # torch is hard to install; changing tmpdir so that it would be easier to install
 echo "$(date '+%Y-%m-%d %H:%M:%S'): Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
-TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
+TMPDIR=. python3 -m pip install --no-compile torch >>/dev/null 2>&1
 
 # ! IMPORTANT 
 # specify input / output paths
