@@ -616,7 +616,7 @@ if args.start <= 5 and args.end >= 5:
         subprocess.run(
             f"chmod -R 777 {os.path.join(args.out_path, '*.log')} {os.path.join(args.out_path,'*.sh')} Unified-bee-Runner >> /dev/null 2>&1",
             shell=True)
-        subprocess.run(f"./{os.path.join(args.out_path, "training-run.sh")}", shell=True)
+        subprocess.run(f"./{os.path.join(args.out_path, 'training-run.sh')}", shell=True)
         logging.info("Submitted executors for training")
         logging.info("Pipeline complete")
     except Exception as e:
