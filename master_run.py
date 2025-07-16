@@ -552,7 +552,6 @@ logging.info("(4) Starting the tar sampling")
 if args.start <= 4 and args.end >= 4:
     try:
         logging.info("(4) Starting the video sampling")
-        # ! IMPORTANT TODO FIX
 
         arguments = f" --in-path {args.out_path} " f" --out-path {args.out_path} "
         subprocess.run(
