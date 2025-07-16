@@ -104,8 +104,6 @@ Arguments:
 Logging:
     Uses Python’s logging module with time‑stamped INFO/DEBUG messages.
 """
-
-
 import getpass
 import logging
 import multiprocessing
@@ -205,7 +203,7 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write(f"Optimize Counting: {args.optimize_counting}\n")
     run_desc.write(f"Use .bin Files: {args.binary_training_optimization}\n")
     run_desc.write(f"Use dataloader workers: {args.use_dataloader_workers}\n")
-    
+
     # path stuff
     rd.write(f"Data Path: {args.in_path}\n")
     rd.write(f"Experiment Path: {args.out_path}\n")
