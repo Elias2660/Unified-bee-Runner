@@ -107,8 +107,6 @@ logging.basicConfig(format="%(asctime)s: %(message)s",
 
 DIR_NAME = os.path.dirname(os.path.abspath(__file__))
 
-    
-
 try:
     args = get_args()
     
