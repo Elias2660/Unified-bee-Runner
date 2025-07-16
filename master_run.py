@@ -295,7 +295,7 @@ if args.start <= 0 and args.end >= 0:
             )
 
         logging.info("(0) ---- Changing Permissions for the Repository----")
-        subprocess.run("chmod 777 counts.csv >> /dev/null 2>&1", shell=True)
+        subprocess.run(f"chmod 777 {os.path.join(args.out_path, 'counts.csv')} >> /dev/null 2>&1", shell=True)
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 0")
@@ -439,7 +439,7 @@ if args.start <= 2 and args.end >= 2:
 
         # changing the perms for the created dataset*.csv files
         logging.info("Changing the permissions for the created files")
-        subprocess.run("chmod -R 777 dataset*.csv *.bak >> /dev/null 2>&1",
+        subprocess.run(f"chmod -R 777 {os.path.join(args.out_path, 'dataset*.csv')} {os.path.join(args.out_path, '*.bak')} >> /dev/null 2>&1",
                        shell=True)
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -522,10 +522,15 @@ if args.start <= 4 and args.end >= 4:
     try:
         logging.info("(4) Starting the video sampling")
         # ! IMPORTANT TODO FIX
-        # subprocess.run(
-        #     f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
-        #     shell=True,
-        # )
+        
+        arguments = (
+            f" --in-path {args.out_path} "
+            f" --out-path {args.out_path} "
+        )
+        subprocess.run(
+            f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')}",
+            shell=True,
+        )
         logging.info(
             "(4) ---- Installing the requirements for the VideoSamplerRewrite")
         subprocess.run(
