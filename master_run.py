@@ -146,7 +146,7 @@ try:
     # add some protections to prevent deletions of data
     # of course, it'll be better with more backups
     protected_file_list = [
-        file for file in os.listdir()
+        file for file in os.listdir(args.in_path)
         if (file.endswith(".txt") or file.endswith(".mp4")
             or file.endswith(".txt"))
     ]
@@ -163,7 +163,7 @@ try:
         shell=True,
         executable="/bin/bash",
     )
-    file_list = os.listdir()
+
     logging.info("(0) Starting the pipeline")
 except Exception as e:
     logging.error(f"Error: {e}")
@@ -252,6 +252,7 @@ if args.start <= 0 and args.end >= 0:
         )
 
         file_list = os.listdir(args.in_path)
+        logging.info(f"file_list: {file_list}")
         contains_h264 = any(".h264" in file for file in file_list)
         contains_mp4 = any(".mp4" in file for file in file_list)
         
