@@ -38,25 +38,25 @@ export PATH="/usr/bin/python3:$PATH"
 
 rm slurm* >>/dev/null 2>&1
 
-echo "Initializing submodules" >>"$OUTPUT_PATH/dataprep.log" 2>&1
+echo "$(date '+%Y-%m-%d %H:%M:%S'): Initializing submodules" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 cd Unified-bee-Runner || exit
 git submodule update --init --recursive >>/dev/null 2>&1
 cd ..
-echo "Submodules initialized" >>"$OUTPUT_PATH/dataprep.log" 2>&1
+echo "$(date '+%Y-%m-%d %H:%M:%S'): Submodules initialized" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 
 python3 -m venv venv
 
 # shellcheck disable=SC1091
 source venv/bin/activate
 
-echo "Upgrading pip" >>"$OUTPUT_PATH/dataprep.log" 2>&1
+echo "$(date '+%Y-%m-%d %H:%M:%S'): Upgrading pip" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 python -m pip install --upgrade pip >>/dev/null 2>&1
 
 # purging cache, this fixes (hopefully torch install issues)
-echo "Purging unwanted dependencies and pip's cache" >>"$OUTPUT_PATH/dataprep.log" 2>&1
+echo "$(date '+%Y-%m-%d %H:%M:%S'): Purging unwanted dependencies and pip's cache" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 pip cache purge >>/dev/null 2>&1
 # torch is hard to install; changing tmpdir so that it would be easier to install
-echo "Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
+echo "$(date '+%Y-%m-%d %H:%M:%S'): Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 TMPDIR=. python3 -m pip install torch >>/dev/null 2>&1
 
 # ! IMPORTANT 
