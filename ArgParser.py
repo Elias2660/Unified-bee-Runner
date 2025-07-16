@@ -1,4 +1,5 @@
 import argparse
+
 """
 ArgParser.py
 
@@ -109,7 +110,7 @@ def get_args():
     parser.add_argument(
         "--out-path",
         type=str,
-        help="(unifier)the path where the output is going to appear, default '.'"
+        help="(unifier)the path where the output is going to appear, default '.'",
     )
     parser.add_argument(
         "--start",
