@@ -112,7 +112,8 @@ try:
     args = get_args()
 
     with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
-        rd.write(f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n")
+        rd.write(
+            f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n")
         rd.write(f"path: {DIR_NAME}\n")
 
         user = getpass.getuser()
@@ -135,7 +136,8 @@ try:
         )
         rd.write(f"Version / Commit: {commit}\n")
 
-        python_version = subprocess.check_output(["which", "python3"]).decode().strip()
+        python_version = subprocess.check_output(
+            ["which", "python3"]).decode().strip()
         rd.write(f"Python Version: {python_version}\n")
 
         system_info = subprocess.check_output(["uname", "-a"]).decode().strip()
@@ -182,7 +184,8 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write(f"Attempted Samples Per Video: {args.number_of_samples}\n")
     run_desc.write(f"Frames per Sample: {args.frames_per_sample}\n")
     run_desc.write(f"Equalized: {args.equalize_samples}\n")
-    run_desc.write(f"Background subtraction: {args.background_subtraction_type}\n")
+    run_desc.write(
+        f"Background subtraction: {args.background_subtraction_type}\n")
     run_desc.write(f"Model: {args.model}\n")
     run_desc.write(f"Epochs: {args.epochs}\n")
     run_desc.write(f"Crop: {args.crop}\n")
@@ -245,7 +248,8 @@ if args.start > args.end:
 # this however will only happen with
 
 if args.start <= 0 and args.end >= 0:
-    logging.info("(0) Starting the video conversions, always defaulting to .mp4")
+    logging.info(
+        "(0) Starting the video conversions, always defaulting to .mp4")
     try:
 
         logging.debug(
@@ -336,7 +340,8 @@ if args.start <= 1 and args.end >= 1:
 
             # if the data directory contains .h264 files, then the files have
             # been converted to .mp4 in the args.out_path directory
-            contains_h264 = any(".h264" in file for file in os.listdir(args.in_path))
+            contains_h264 = any(
+                ".h264" in file for file in os.listdir(args.in_path))
 
             arguments = (
                 f" --path {args.in_path if not contains_h264 else args.out_path} "
@@ -350,7 +355,8 @@ if args.start <= 1 and args.end >= 1:
             )
 
         else:
-            logging.info("No background subtraction type given, skipping this step")
+            logging.info(
+                "No background subtraction type given, skipping this step")
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 1")
@@ -427,7 +433,8 @@ if args.start <= 2 and args.end >= 2:
                 if file.startswith("log") and file.endswith(".txt")
             ]
 
-            logging.info(f"(2) Creating the dataset with the files: {log_list}")
+            logging.info(
+                f"(2) Creating the dataset with the files: {log_list}")
 
             if args.files is None:
                 string_log_list = ",".join(log_list).strip().replace(" ", "")
@@ -475,7 +482,8 @@ logging.info("(3) Splitting up the data")
 if args.start <= 3 and args.end >= 3:
     try:
         logging.info("(3) Starting the data splitting")
-        logging.info("(3) ---- Installing the requirements for the bee_analysis ----")
+        logging.info(
+            "(3) ---- Installing the requirements for the bee_analysis ----")
         subprocess.run(
             f"pip install --no-compile -r {os.path.join(DIR_NAME, 'bee_analysis/requirements.txt')} >> /dev/null",
             shell=True,
@@ -521,7 +529,7 @@ if args.start <= 3 and args.end >= 3:
 
         logging.info("Changing permissions for the created files")
         subprocess.run(
-            f"chmod -R 777 {os.path.join(args.out_path,'dataset*.csv')} {os.path.join(args.out_path,'*.log')} {os.path.join(args.out_path, '*.sh')} >> /dev/null 2>&1",
+            f"chmod -R 777 {os.path.join(args.out_path, 'dataset*.csv')} {os.path.join(args.out_path, '*.log')} {os.path.join(args.out_path, '*.sh')} >> /dev/null 2>&1",
             shell=True,
         )
     except Exception as e:
@@ -547,12 +555,14 @@ if args.start <= 4 and args.end >= 4:
             f"python3 {os.path.join(DIR_NAME, 'Dataset_Creator/dataset_checker.py')} {arguments}",
             shell=True,
         )
-        logging.info("(4) ---- Installing the requirements for the VideoSamplerRewrite")
+        logging.info(
+            "(4) ---- Installing the requirements for the VideoSamplerRewrite")
         subprocess.run(
             f"pip install --no-compile -r {os.path.join(DIR_NAME, 'VideoSamplerRewrite/requirements.txt')} >> /dev/null",
             shell=True,
         )
-        contains_h264 = any(".h264" in file for file in os.listdir(args.in_path))
+        contains_h264 = any(
+            ".h264" in file for file in os.listdir(args.in_path))
 
         arguments = (
             f" --video-input-path  {args.out_path if contains_h264 else args.in_path} "
@@ -624,12 +634,15 @@ if args.start <= 5 and args.end >= 5:
         ]
 
         count = multiprocessing.cpu_count()
-        pool = multiprocessing.Pool(processes=min(int(count / 5), len(file_list)))
-        pool.starmap(create_bin_file, ((file, DIR_NAME, args) for file in file_list))
+        pool = multiprocessing.Pool(
+            processes=min(int(count / 5), len(file_list)))
+        pool.starmap(create_bin_file, ((file, DIR_NAME, args)
+                     for file in file_list))
         logging.info("Bin files created.")
 
         # make sure that everyone can analyze these new files
-        subprocess.run(f"chmod -R 777 {os.path.join(args.out_path, '*.bin')} >> /dev/null 2>&1", shell=True)
+        subprocess.run(
+            f"chmod -R 777 {os.path.join(args.out_path, '*.bin')} >> /dev/null 2>&1", shell=True)
 
     try:
         subprocess.run(
@@ -638,10 +651,10 @@ if args.start <= 5 and args.end >= 5:
         )
         os.chdir(args.out_path)
         subprocess.run(
-            f"chmod -R 777 {os.path.join( '*.log')} {os.path.join('*.sh')} >> /dev/null 2>&1",
+            f"chmod -R 777 {os.path.join('*.log')} {os.path.join('*.sh')} >> /dev/null 2>&1",
             shell=True,
         )
-        subprocess.run(f"./{os.path.join( 'training-run.sh')}", shell=True)
+        subprocess.run(f"./{os.path.join('training-run.sh')}", shell=True)
         logging.info("Submitted executors for training")
         logging.info("Pipeline complete")
     except Exception as e:
