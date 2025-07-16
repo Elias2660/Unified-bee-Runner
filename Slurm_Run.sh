@@ -6,7 +6,7 @@ sbatch \
   -n 8 \
   -c 10 -G 1 --mem=600G \
   --time=28800 \
-  -o dataprep.log \
+  -o "/dev/null" \
   Unified-bee-Runner/Unifier_Run.sh
 
 echo "Slurm Submitted"

@@ -5,7 +5,7 @@ This script is organized in chapters, so you can use the start and end flags to 
 Arguments:
     -h, --help                     Show this help message and exit.
     --data-path DATA_PATH          (unifier) path to the data, default is ".".
-    --experiment-path EXPERIMENT_PATH  
+    --out-path out_PATH  
                                    (unifier) the place where the output of all the scripts will run will occur
     --start START                  (unifier) Start the pipeline at the given step, default 0.
     --end END                      (unifier) End the pipeline at the given step, default 6.
@@ -190,7 +190,7 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     
     # path stuff
     rd.write(f"Data Path: {args.in_path}\n")
-    rd.write(f"Experiment Path: {args.out_path}\n")
+    rd.write(f"Out Path: {args.out_path}\n")
 
 with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Parsed Arguments --\n")
@@ -256,7 +256,7 @@ if args.start <= 0 and args.end >= 0:
         contains_mp4 = any(".mp4" in file for file in file_list)
         
         # for the path, the output .mp4 videos, if they converted them,
-        # would appear in the --experiment-path directory
+        # would appear in the --out-path directory
         # the counts file
         arguments = (f" --video-filepath {args.in_path} "
                      f" ----output-filepath {args.out_path}"
