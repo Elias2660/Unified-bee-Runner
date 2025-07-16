@@ -260,7 +260,7 @@ if args.start <= 0 and args.end >= 0:
         # would appear in the --out-path directory
         # the counts file
         arguments = (f" --video-filepath {args.in_path} "
-                     f" ----output-filepath {args.out_path}"
+                     f" --output-filepath {args.out_path}"
                      f" --max-workers {args.max_workers_frame_counter} ")
 
         logging.info("(0) ---- Running Video Conversions Sections ----")
