@@ -28,14 +28,14 @@ If there is a branch that you want to use, you can simply checkout to the branch
 
 ## Usage
 
-To run the 
+<!-- To run the pipeline, use the provided [shell script](Unifier_Run.sh) in [SLURM](https://slurm.schedmd.com/documentation.html). If you don't want to, (this is not recommended though) you can execute it in your command line, though this will take a while:
+
+**NOTE**: Do not `cd` into the `Unified-Bee-Runner` dir to run with default settings. They are configured to run in the dir containing the data. Your file structure should look like when you run the commands (you should be in data_dir): -->
+
 
 ### Quick Start 
 
-
-To run the pipeline, use the provided [shell script](Unifier_Run.sh) in [SLURM](https://slurm.schedmd.com/documentation.html). If you don't want to, (this is not recommended though) you can execute it in your command line, though this will take a while:
-
-**NOTE**: Do not `cd` into the `Unified-Bee-Runner` dir to run with default settings. They are configured to run in the dir containing the data. Your file structure should look like when you run the commands (you should be in data_dir):
+The most easy way to run the runner is to run it directly in the directory that contains the data. After cloning, your directory should look something like this:
 
 ```
 data_dir
@@ -47,15 +47,17 @@ data_dir
 └── logPos.txt
 ```
 
-Run `squeue -u <user>` to be able to find your current jobs and the servers that they are running on.
 
-**RECOMMENDED**: To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings:
+To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings:
 
 ```sh
 ./Unified-bee-Runner/Slurm_Run.sh
 ```
 
-You can edit the [`Unifier_Run.sh`](Unifier_Run.sh) file with the settings that you desire. You can check the settings by running [`python3 Unified-bee-Runner/master_run.py -h`](master_run.py) or checking in [`ArgParser.py`](ArgParser.py) for the arguments that can be used. Not all of them work, including those that crop, and this pipeline is still working through many bugs.
+Run `squeue -u <user>` to be able to find your current jobs and the servers that they are running on. If you don't see that job, try again and if it doesn't work again, the check the slurm troubleshooting guide. 
+
+
+<!-- You can edit the [`Unifier_Run.sh`](Unifier_Run.sh) file with the settings that you desire. You can check the settings by running [`python3 Unified-bee-Runner/master_run.py -h`](master_run.py) or checking in [`ArgParser.py`](ArgParser.py) for the arguments that can be used. Not all of them work, including those that crop, and this pipeline is still working through many bugs. -->
 
 Then run:
 
