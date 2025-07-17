@@ -24,7 +24,14 @@ This is mean to unify all the code that has been created for the [project (2024 
    git clone https://github.com/Elias2660/Unified-bee-Runner.git
    ```
 
+If there is a branch that you want to use, you can simply checkout to the branch that you choose.
+
 ## Usage
+
+To run the 
+
+### Quick Start 
+
 
 To run the pipeline, use the provided [shell script](Unifier_Run.sh) in [SLURM](https://slurm.schedmd.com/documentation.html). If you don't want to, (this is not recommended though) you can execute it in your command line, though this will take a while:
 
