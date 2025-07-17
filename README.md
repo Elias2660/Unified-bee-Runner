@@ -24,11 +24,17 @@ This is mean to unify all the code that has been created for the [project (2024 
    git clone https://github.com/Elias2660/Unified-bee-Runner.git
    ```
 
+If there is a branch that you want to use, you can simply checkout to the branch that you choose.
+
 ## Usage
 
-To run the pipeline, use the provided [shell script](Unifier_Run.sh) in [SLURM](https://slurm.schedmd.com/documentation.html). If you don't want to, (this is not recommended though) you can execute it in your command line, though this will take a while:
+<!-- To run the pipeline, use the provided [shell script](Unifier_Run.sh) in [SLURM](https://slurm.schedmd.com/documentation.html). If you don't want to, (this is not recommended though) you can execute it in your command line, though this will take a while:
 
-**NOTE**: Do not `cd` into the `Unified-Bee-Runner` dir to run with default settings. They are configured to run in the dir containing the data. Your file structure should look like when you run the commands (you should be in data_dir):
+**NOTE**: Do not `cd` into the `Unified-Bee-Runner` dir to run with default settings. They are configured to run in the dir containing the data. Your file structure should look like when you run the commands (you should be in data_dir): -->
+
+### Quick Start
+
+The most easy way to run the runner is to run it directly in the directory that contains the data. After cloning, your directory should look something like this:
 
 ```
 data_dir
@@ -40,21 +46,31 @@ data_dir
 └── logPos.txt
 ```
 
-Run `squeue -u <user>` to be able to find your current jobs and the servers that they are running on.
-
-**RECOMMENDED**: To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings:
+To run with default settings, you can run the [`Slurm_Run.sh`](Slurm_Run.sh) file, which has preset sbatch settings (this is in the `data_dir`):
 
 ```sh
 ./Unified-bee-Runner/Slurm_Run.sh
 ```
 
-You can edit the [`Unifier_Run.sh`](Unifier_Run.sh) file with the settings that you desire. You can check the settings by running [`python3 Unified-bee-Runner/master_run.py -h`](master_run.py) or checking in [`ArgParser.py`](ArgParser.py) for the arguments that can be used. Not all of them work, including those that crop, and this pipeline is still working through many bugs.
+Run `squeue -u <user>` to be able to find your current jobs and the servers that they are running on. If you don't see that job, try again and if it doesn't work again, the check the slurm troubleshooting guide.
 
-Then run:
+### More advanced usage
 
-```sh
-sbatch -x [servers, such as server1,server2] Unified-bee-Runner/Unifier_Run.sh
-```
+For more advanced usage, you can checkout the [`Unifier_Run.sh`](Unifier_Run.sh) file, which contains most of the settings that are used in the pipeline. To see a more advanced list, you can also check out the [`ArgParser.py`](ArgParser.py) file that has all the possible settings that can be used. **Not all of them work and this pipeline is still working through many bugs.**
+
+The most important settings that you can change are:
+
+- `--number-of-samples`: the max number of samples that the sampler will aim to extract from each video
+- `--max-workers-video-sampling`: the number of concurrent videos that you can sample with
+- `--frames-per-sample`: the number of frames that will be used by the model for each sample for concurrence.
+
+Additionally, the `INPUT_PATH` and `OUTPUT_PATH` variables, both in [`Unifier_Run.sh`](Unifier_Run.sh) can be edited to change the where the runner will look for input and output the experiment results.
+
+Changing the `slurm` settings can be helpful. Updating memory could be dangerous unless you are knowledgeable of the workflow, but using the `-x` and an ilab server that seems full could help your job not get canceled.
+
+## Slurm Troubleshooting
+
+If you slurm job keeps dying, then the easiest way to fix that problem is the reduce memory, which can most often be done by reducing `--max-workers-video-sampling` argument in [`Unifier_Run.sh`](Unifier_Run.sh) and the `--mem=` command in [`Slurm_Run.sh`](Slurm_Run.sh). Usually you can reduce the argument to around 500GB without changing the `--max-workers-video-sampling` argument. Otherwise, you should reduce by one for the `--max-workers-video-sampling` argument for each ~100 GB you remove. You can also remove / decrease the `-n`, `-c`, `-G` arguments, but that might slow stuff down.
 
 ## Pipeline Steps
 
