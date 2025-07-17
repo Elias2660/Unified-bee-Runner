@@ -450,7 +450,7 @@ if args.start <= 2 and args.end >= 2:
                 f" --in-path {args.in_path} "
                 f" --out-path {args.out_path} "
                 # adding these options in case they need to be changed in the future
-                f" --counts counts.csv " #!just the name of the counts file, not the path
+                f" --counts counts.csv "  # !just the name of the counts file, not the path
                 f" --files '{string_log_list}' "
                 f" --starting-frame {args.starting_frame} "
                 f" --frame-interval {args.frame_interval} "
