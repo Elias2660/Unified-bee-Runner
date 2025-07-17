@@ -642,7 +642,11 @@ if args.start <= 5 and args.end >= 5:
 
     try:
         subprocess.run(
-            f"chmod -R 777 Unified-bee-Runner >> /dev/null 2>&1",
+            f"chmod -R 777 Unified-bee-Runner  >> /dev/null 2>&1",
+            shell=True,
+        )
+        subprocess.run(
+            f"chmod 777 {args.out_path}  >> /dev/null 2>&1",
             shell=True,
         )
         os.chdir(args.out_path)
