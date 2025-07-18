@@ -208,11 +208,9 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write(f"Data Path: {args.in_path}\n")
     run_desc.write(f"Out Path: {args.out_path}\n")
 
-with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Parsed Arguments --\n")
     run_desc.write(f"Parsed Arguments: {args}\n")
 
-with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Miscellaneous Settings --\n")
     run_desc.write(f"Seed: {args.seed}\n")
     run_desc.write(f"Normalize: {args.normalize}\n")
@@ -220,7 +218,6 @@ with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write(f"Height: {args.height}\n")
     run_desc.write(f"Frames per Second: {args.fps}\n")
 
-with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "a") as run_desc:
     run_desc.write("\n-- Additional Options --\n")
     run_desc.write(f"Crop Enabled: {args.crop}\n")
     if args.crop:
