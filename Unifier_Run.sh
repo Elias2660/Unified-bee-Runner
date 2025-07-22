@@ -74,6 +74,6 @@ python3 Unified-bee-Runner/master_run.py \
   --in-path "$INPUT_PATH" --out-path "$OUTPUT_PATH" \
   --height 720 --frame-interval 50 \
   --width 960 \
-  --number-of-samples 10000 --max-workers-video-sampling 6 \
+  --number-of-samples 10000 --max-workers-video-sampling 7 \
   --frames-per-sample 5 \
   --gpus 1 >>"$OUTPUT_PATH/dataprep.log" 2>&1
