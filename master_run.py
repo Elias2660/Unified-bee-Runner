@@ -111,9 +111,7 @@ import multiprocessing
 import os
 import subprocess
 from datetime import datetime
-from stat import S_IREAD
-from stat import S_IRGRP
-from stat import S_IROTH
+from stat import S_IREAD, S_IRGRP, S_IROTH
 
 from ArgParser import get_args
 
