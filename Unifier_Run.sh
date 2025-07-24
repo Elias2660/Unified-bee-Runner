@@ -62,7 +62,7 @@ pip cache purge >>/dev/null 2>&1
 echo "$(date '+%Y-%m-%d %H:%M:%S'): Installing torch using the current directory as a temporary dir" >>"$OUTPUT_PATH/dataprep.log" 2>&1
 
 python -m ensurepip --upgrade >>/dev/null 2>&1
-pip install uv >> /dev/null 2>&1
+pip install uv >>/dev/null 2>&1
 TMPDIR=. python3 -m uv pip install torch >>/dev/null 2>&1
 
 # ! IMPORTANT
