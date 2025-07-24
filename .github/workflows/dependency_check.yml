@@ -1,4 +1,6 @@
 name: Install Python Dependencies and Check for Conflicts
+permissions:
+  contents: read
 
 on:
   push:
