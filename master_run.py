@@ -628,7 +628,8 @@ if args.start <= 5 and args.end >= 5:
             file for file in os.listdir(args.out_path) if file.endswith(".tar")
         ]
         if len(file_list) == 0:
-            raise Exception("There are no tar files found. That means that there is an uncaught problem earlier in the pipeline that has caused there to be zero tar files. Try to debug that.")
+            raise Exception(
+                "There are no tar files found. That means that there is an uncaught problem earlier in the pipeline that has caused there to be zero tar files. Try to debug that.")
         count = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=min(int(count /
                                                       5), len(file_list)))
