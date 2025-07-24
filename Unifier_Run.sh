@@ -1,14 +1,5 @@
 #!/bin/bash
 
-#SBATCH --job-name=Unifier
-#SBATCH --partition=unlimited        # check if 'ilab' is valid on your cluster
-#SBATCH --gres=gpu:1             
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=48:00:00              # time limit
-#SBATCH --output=slurm-%j.out
-#SBATCH --error=slurm-%j.err
-
 # ! IMPORTANT TO SPECIFY INPUT AND OUTPUT PATH
 INPUT_PATH="."
 OUTPUT_PATH="."
@@ -85,6 +76,7 @@ python3 Unified-bee-Runner/master_run.py \
   --width 960 \
   --number-of-samples 10000 --max-workers-video-sampling 7 \
   --frames-per-sample 5 \
-  --crop --crop_x_offset 154 --crop_y_offset 158 \
-  --out-width 720 --out-height 340 \
   --gpus 1 >>"$OUTPUT_PATH/dataprep.log" 2>&1
+
+#   --crop --crop_x_offset 154 --crop_y_offset 158 \
+#   --out-width 720 --out-height 340 \
