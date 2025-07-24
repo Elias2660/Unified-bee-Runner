@@ -1,4 +1,5 @@
 import argparse
+
 """
 Module Name: ArgParser.py
 
@@ -539,7 +540,7 @@ def get_args():
         type=float,
         help="(sampling) The scaling factor to scale resultant sample images",
         default=1.0,
-        required=False
+        required=False,
     )
     parser.add_argument(
         "--dataset-writing-batch-size",
