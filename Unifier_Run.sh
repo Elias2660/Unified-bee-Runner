@@ -77,3 +77,6 @@ python3 Unified-bee-Runner/master_run.py \
   --number-of-samples 10000 --max-workers-video-sampling 7 \
   --frames-per-sample 5 \
   --gpus 1 >>"$OUTPUT_PATH/dataprep.log" 2>&1
+
+#   --crop --crop_x_offset 154 --crop_y_offset 158 \
+#   --out-width 720 --out-height 340 \

@@ -558,6 +558,13 @@ def get_args():
         default=False,
     )
     parser.add_argument(
+        "--scale-factor",
+        type=float,
+        help="(sampling) The scaling factor to scale resultant sample images",
+        default=1.0,
+        required=False,
+    )
+    parser.add_argument(
         "--dataset-writing-batch-size",
         type=int,
         help="(sampling) The batch size for writing the dataset, default=10",

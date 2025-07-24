@@ -576,10 +576,12 @@ if args.start <= 4 and args.end >= 4:
             f" --max-workers-tar-writing {args.max_workers_tar_writing} "
             f" --max-batch-size-sampling {args.max_batch_size_sampling} ")
         if args.crop:
-            arguments += (f" --crop --x-offset {args.crop_x_offset} "
-                          f" --y-offset {args.crop_y_offset} "
-                          f" --out-width {args.width} "
-                          f" --out-height {args.height}")
+            arguments += (
+                f" --crop --x-offset {args.crop_x_offset} "
+                f" --y-offset {args.crop_y_offset} "
+                f" --out-width {args.width if not args.crop else args.out_width} "
+                f" --out-height {args.height if not args.crop else args.out_height}"
+                f" --scale-factor {args.scale_factor} ")
         if args.debug:
             arguments += " --debug "
         if args.equalize_samples:
@@ -627,7 +629,9 @@ if args.start <= 5 and args.end >= 5:
             file for file in os.listdir(args.out_path) if file.endswith(".tar")
         ]
         if len(file_list) == 0:
-            raise Exception("There are no tar files found. That means that there is an uncaught problem earlier in the pipeline that has caused there to be zero tar files. Try to debug that.")
+            raise Exception(
+                "There are no tar files found. That means that there is an uncaught problem earlier in the pipeline that has caused there to be zero tar files. Try to debug that."
+            )
         count = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(processes=min(int(count /
                                                       5), len(file_list)))
