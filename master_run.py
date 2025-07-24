@@ -578,8 +578,9 @@ if args.start <= 4 and args.end >= 4:
         if args.crop:
             arguments += (f" --crop --x-offset {args.crop_x_offset} "
                           f" --y-offset {args.crop_y_offset} "
-                          f" --out-width {args.width} "
-                          f" --out-height {args.height}")
+                          f" --out-width {args.width if not args.crop else args.out_width} "
+                          f" --out-height {args.height if not args.crop else args.out_height}"
+                          f" --scale-factor {args.scale_factor} ")
         if args.debug:
             arguments += " --debug "
         if args.equalize_samples:
