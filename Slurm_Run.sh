@@ -9,4 +9,4 @@ sbatch \
   -o "/dev/null" \
   Unified-bee-Runner/Unifier_Run.sh
 
-echo "Slurm Submitted"
+echo "Slurm job submitted. Run the 'squeue' command to see if it got submitted!"
