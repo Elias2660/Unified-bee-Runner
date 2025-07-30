@@ -104,12 +104,13 @@ Arguments:
 Logging:
     Uses Python’s logging module with time‑stamped INFO/DEBUG messages.
 """
+import datetime
 import getpass
 import logging
 import multiprocessing
 import os
 import subprocess
-from datetime import datetime
+import time
 from stat import S_IREAD
 from stat import S_IRGRP
 from stat import S_IROTH
@@ -121,6 +122,7 @@ logging.basicConfig(format="%(asctime)s: %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S")
 
 DIR_NAME = os.path.dirname(os.path.abspath(__file__))
+start_time = time.time()
 
 try:
     args = get_args()
@@ -265,7 +267,7 @@ if args.start <= 0 and args.end >= 0:
         )
 
         file_list = os.listdir(args.in_path)
-        logging.info(f"file_list: {file_list}")
+        logging.debug(f"file_list: {file_list}")
         contains_h264 = any(".h264" in file for file in file_list)
         contains_mp4 = any(".mp4" in file for file in file_list)
 
@@ -655,8 +657,11 @@ if args.start <= 5 and args.end >= 5:
             shell=True,
         )
         subprocess.run(f"./{os.path.join('training-run.sh')}", shell=True)
-        logging.info("Submitted executors for training")
-        logging.info("Pipeline complete")
+        logging.info(
+            "Ran training-run.sh, train jobs should be starting shortly")
+        logging.info(
+            f"Pipeline complete after {datetime.timedelta(seconds=(time.time() - start_time))}"
+        )
     except Exception as e:
         logging.error(f"Error: {e}")
         raise ValueError("Something went wrong in step 5")
