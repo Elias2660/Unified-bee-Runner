@@ -129,7 +129,7 @@ try:
 
     with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
         rd.write(
-            f"start-is: {format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n"
+            f"start-is: {format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}\n"
         )
         rd.write(f"path: {DIR_NAME}\n")
 
