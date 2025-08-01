@@ -6,10 +6,10 @@ echo "Submitting Slurm job for saliency map generation..."
 # Submit the job with high resource allocation
 sbatch \
   --job-name=saliency_generation \
-  -n 1 \
-  -c 1 \
-  -G 1 \
-  --mem=20G \
+  -n 2 \
+  -c 4 \
+  -G 2 \
+  --mem=200G \
   --time=28800 \
   -o "dev/null"\
   --wrap="
