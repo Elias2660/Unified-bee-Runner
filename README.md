@@ -86,13 +86,12 @@ This is run using the chapter system, so you can choose the specific steps that 
 ## Cropping Arguments
 
 You can choose specific cropping arguments by editing the `--crop`, `crop_x_offset`, `crop_y_offset`, `--out-width`, and `--out-height`.
-The initial offset coords are in the center of the image. 
+The initial offset coords are in the center of the image.
 
 `Y offset:` Negative makes it higher while positive makes it lower
 `X offset:` Positive moves it right while negative moves it left
 `Out-width:` The width of the cropped image
 `Out-height:` The height of the cropped image
-
 
 ## Other Stuff
 
