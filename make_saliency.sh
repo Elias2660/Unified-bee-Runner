@@ -23,7 +23,8 @@ sbatch \
         --checkpoint ../../model.checkpoint \
         --datasets ../../dataset_0.tar ../../dataset_1.tar ../../dataset_2.tar \
         --debug \
-        --map_percent 60.0
+        --map_percent 20.0 \
+        --power_scale 0.6
         
     echo 'Job completed at: \$(date)'
   "
