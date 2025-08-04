@@ -22,8 +22,8 @@ sbatch \
     python3 generate_visualizations.py \
         --checkpoint ../../model.checkpoint \
         --datasets ../../dataset_0.tar ../../dataset_1.tar ../../dataset_2.tar \
-        --no_gradcam \
-        --debug
+        --debug \
+        --map_percent 60.0
         
     echo 'Job completed at: \$(date)'
   "
