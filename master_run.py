@@ -110,7 +110,9 @@ import logging
 import multiprocessing
 import os
 import subprocess
+import argparse
 import time
+import json
 from stat import S_IREAD
 from stat import S_IRGRP
 from stat import S_IROTH
@@ -125,7 +127,21 @@ DIR_NAME = os.path.dirname(os.path.abspath(__file__))
 start_time = time.time()
 
 try:
-    args = get_args()
+    # seek for a config file
+    file_list = os.listdir(DIR_NAME)
+    args = None
+    if "config.json" not in file_list:
+        logging.info("ARGUMENTS: Did not find json, using the file list instead")
+        args = get_args()
+        with open(os.path.join(DIR_NAME, "config.json")):
+            json.dump(vars(args), args, indent=2)
+    else: 
+        logging.info("ARGUMENTS: Found json file config.json, using config.json as the argument list")
+        
+        with open(os.path.join(DIR_NAME, "config.json")) as f:
+            args_dict = json.load(f)
+        args = argparse.Namespace(**args_dict)
+    
 
     with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
         rd.write(
