@@ -131,17 +131,18 @@ try:
     file_list = os.listdir(DIR_NAME)
     args = None
     if "config.json" not in file_list:
-        logging.info("ARGUMENTS: Did not find json, using default settings found in Unifier_Run.sh and ArgParser.py instead")
+        logging.info(
+            "ARGUMENTS: Did not find json, using default settings found in Unifier_Run.sh and ArgParser.py instead")
         args = get_args()
         with open(os.path.join(DIR_NAME, "config.json"), "w+") as f:
             json.dump(vars(args), f, indent=2)
-    else: 
-        logging.info("ARGUMENTS: Found json file config.json, using config.json as the argument list")
-        
+    else:
+        logging.info(
+            "ARGUMENTS: Found json file config.json, using config.json as the argument list")
+
         with open(os.path.join(DIR_NAME, "config.json"), "r+") as f:
             args_dict = json.load(f)
         args = argparse.Namespace(**args_dict)
-    
 
     with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
         rd.write(
