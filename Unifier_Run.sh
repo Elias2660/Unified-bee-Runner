@@ -1,8 +1,20 @@
 #!/bin/bash
 
+# ! ARGS MIGHT BE OVERWRITTEN BY THE CONFIG FILE 
+
+
 # ! IMPORTANT TO SPECIFY INPUT AND OUTPUT PATH
 INPUT_PATH="."
-OUTPUT_PATH="."
+
+CONFIG_JSON="config.json"
+DEFAULT_OUTPUT_PATH="."
+
+if [ -f "$CONFIG_JSON" ]; then
+  OUTPUT_PATH=$(python3 -c "import json; d=json.load(open('$CONFIG_JSON')); print(d.get('out-path', '$DEFAULT_OUTPUT_PATH'))")
+else
+  OUTPUT_PATH="$DEFAULT_OUTPUT_PATH"
+fi
+
 
 touch "$OUTPUT_PATH"/dataprep.log
 echo -n "" >"$OUTPUT_PATH"/dataprep.log
