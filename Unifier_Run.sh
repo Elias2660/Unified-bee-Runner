@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# ! ARGS MIGHT BE OVERWRITTEN BY THE CONFIG FILE 
-
+# ! ARGS MIGHT BE OVERWRITTEN BY THE CONFIG FILE
 
 # ! IMPORTANT TO SPECIFY INPUT AND OUTPUT PATH
 INPUT_PATH="."
@@ -14,7 +13,6 @@ if [ -f "$CONFIG_JSON" ]; then
 else
   OUTPUT_PATH="$DEFAULT_OUTPUT_PATH"
 fi
-
 
 touch "$OUTPUT_PATH"/dataprep.log
 echo -n "" >"$OUTPUT_PATH"/dataprep.log
