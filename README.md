@@ -68,6 +68,10 @@ Additionally, the `INPUT_PATH` and `OUTPUT_PATH` variables, both in [`Unifier_Ru
 
 Changing the `slurm` settings can be helpful. Updating memory could be dangerous unless you are knowledgeable of the workflow, but using the `-x` and an ilab server that seems full could help your job not get canceled.
 
+### Config files
+
+This pipeline automatically generates a `config.log` file inside the `Unified-bee-Runner` dir. The pipeline automatically looks inside the dir in order to find the file, but if it doesn't it uses the arguments passed in the [`Unifier_Run.sh`](Unifier_Run.sh) file. You can copy the config file into the `Unified-bee-Runner` across runs in order to use the same setting.
+
 ## Slurm Troubleshooting
 
 If you slurm job keeps dying, then the easiest way to fix that problem is the reduce memory, which can most often be done by reducing `--max-workers-video-sampling` argument in [`Unifier_Run.sh`](Unifier_Run.sh) and the `--mem=` command in [`Slurm_Run.sh`](Slurm_Run.sh). Usually you can reduce the argument to around 500GB without changing the `--max-workers-video-sampling` argument. Otherwise, you should reduce by one for the `--max-workers-video-sampling` argument for each ~100 GB you remove. You can also remove / decrease the `-n`, `-c`, `-G` arguments, but that might slow stuff down.

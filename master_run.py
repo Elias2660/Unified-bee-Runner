@@ -104,8 +104,10 @@ Arguments:
 Logging:
     Uses Python’s logging module with time‑stamped INFO/DEBUG messages.
 """
+import argparse
 import datetime
 import getpass
+import json
 import logging
 import multiprocessing
 import os
@@ -125,7 +127,24 @@ DIR_NAME = os.path.dirname(os.path.abspath(__file__))
 start_time = time.time()
 
 try:
-    args = get_args()
+    # seek for a config file
+    file_list = os.listdir(DIR_NAME)
+    args = None
+    if "config.json" not in file_list:
+        logging.info(
+            "ARGUMENTS: Did not find json, using default settings found in Unifier_Run.sh and ArgParser.py instead"
+        )
+        args = get_args()
+        with open(os.path.join(DIR_NAME, "config.json"), "w+") as f:
+            json.dump(vars(args), f, indent=2)
+    else:
+        logging.info(
+            "ARGUMENTS: Found json file config.json, using config.json as the argument list"
+        )
+
+        with open(os.path.join(DIR_NAME, "config.json"), "r+") as f:
+            args_dict = json.load(f)
+        args = argparse.Namespace(**args_dict)
 
     with open(os.path.join(args.out_path, "RUN_DESCRIPTION.log"), "w+") as rd:
         rd.write(
